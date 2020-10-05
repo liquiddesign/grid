@@ -1,0 +1,10 @@
+<div class="pagination">
+	On page: <a href="{plink this $onpage => 5}">5</a> <a href="{link this, $onpage => 10}">10</a> <a href="{link this, $onpage => 20}">20</a>  &nbsp;|&nbsp;
+	{if !$paginator->isFirst()}
+		<a href="{plink this $page => 1}">První</a> &nbsp;|&nbsp; <a href="{plink this $page => $paginator->page-1}">Předchozí</a> &nbsp;|&nbsp;
+	{/if}
+		Stránka {$paginator->page} z {$paginator->pageCount}
+    {if !$paginator->isLast()}
+		&nbsp;|&nbsp; <a href="{plink this $page => $paginator->page+1}">Další</a> &nbsp;|&nbsp; <a href="{plink this $page => $paginator->pageCount}">Poslední</a>
+	{/if}
+</div>

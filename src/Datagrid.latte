@@ -1,0 +1,23 @@
+{control filterForm}
+<div class="table-responsive">
+	{form form}
+	<table class="table table-sm lqd-table">
+		<thead class="admin-head">
+		{foreach $columns as $column}
+			<th>
+				<a n:tag-if="$column->isOrdable()" href="{link this order=>$column->getOrderExpression() . '-' . $control->getDirection(true)}">
+					{$column->getTableHead()|noescape}
+				</a>
+			</th>
+		{/foreach}
+		</thead>
+		{$control->getRows()}
+	</table>
+	<div>
+		{foreach $form->getComponents(false, Nette\Forms\Controls\SubmitButton::class) as $component}
+			{$component->getControl()}
+		{/foreach}
+	</div>
+{/form}
+</div>
+{control paging $control}
