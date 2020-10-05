@@ -392,9 +392,9 @@ class Datalist extends Control
 		$this->nestingCallback = $callback;
 	}
 
-	public static function loadSession(\Nette\Http\SessionSection $session): void
+	public static function loadSession(\Nette\Http\SessionSection $session): callable
 	{
-		function ($datalist, $params) use ($session): void {
+		return function ($datalist, $params) use ($session): void {
 			if (!isset($params['page']) && isset($session->page)) {
 				$datalist->page = $session->page;
 			}
@@ -407,9 +407,9 @@ class Datalist extends Control
 		};
 	}
 	
-	public static function saveSession(\Nette\Http\SessionSection $session): void
+	public static function saveSession(\Nette\Http\SessionSection $session): callable
 	{
-		function ($datalist, $params) use ($session): void {
+		return function ($datalist, $params) use ($session): void {
 			if (isset($params['page'])) {
 				/* @phpstan-ignore-next-line */
 				$session->page = $params['page'];
