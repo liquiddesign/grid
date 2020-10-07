@@ -41,6 +41,11 @@ class Datagrid extends Datalist
 	 */
 	protected array $inputs = [];
 	
+	/**
+	 * @var callable[]
+	 */
+	protected array $actions;
+	
 	public function getSourceIdName(): string
 	{
 		if (!$this->source instanceof Collection) {
@@ -96,17 +101,32 @@ class Datagrid extends Datalist
 		}, $td, $orderExpression, $wrapperAttributes);
 	}
 	
-	public function addColumnLink($th, string $linkText, string $link, string $linkClass = '', ?string $orderExpression = null, array $wrapperAttributes = []): Column
+	public function handleMicroSignal(string $name, string $id): void
 	{
-		return $this->addColumn(
-			$th,
-			static function (Entity $item, Datagrid $table) use ($link) {
-				return $table->getPresenter()->link($link, $item->getPK());
-			},
-			'<a href="%s" class="' . $linkClass . '">' . $linkText . '</a>',
-			$orderExpression,
-			$wrapperAttributes + ['class' => 'minimal'],
-		);
+		if (!isset($this->actions[$name]) && $object = $this->getSource()->where($this->getSourceIdName(), $id)->first()) {
+			return;
+		}
+		\call_user_func($this->actions[$name], $object, $this);
+	}
+	
+	public function addColumnAction($th, string $td, callable $actionCallback, array $properties = [], ?string $orderExpression = null, array $wrapperAttributes = []): Column
+	{
+		$id = \count($this->columns) + 1;
+		$parent = $this;
+		$this->actions[$id] = $actionCallback;
+		
+		return $this->addColumn($th, static function ($item) use ($properties, $parent, $id) {
+			$vars = [];
+			$idName = $parent->getSourceIdName();
+			$properties = [$parent->link('microSignal!', [$id, $item->$idName])];
+			$properties += !\is_array($properties) ? [$properties] : $properties;
+			
+			foreach ($properties as $property) {
+				$vars[] = $item->$property;
+			}
+			
+			return $vars;
+		}, $td, $orderExpression, $wrapperAttributes);
 	}
 	
 	/**
@@ -212,42 +232,9 @@ class Datagrid extends Datalist
 	{
 		return new Form();
 	}
-	
-	protected function createComponentFilterForm(): ?IComponent
-	{
-		return new FilterForm();
-	}
-	
-	protected function createComponentPaging(): ?IComponent
-	{
-		return new Paging();
-	}
 
 	protected function registerInput(string $name, $defaultValue, bool $isCheckboxType = false): void
 	{
 		$this->inputs[$name] = [$defaultValue, $isCheckboxType];
-	}
-	
-	/**
-	 * @param string $name
-	 * @param mixed[] $args
-	 * @return mixed
-	 */
-	public function __call(string $name, array $args)
-	{
-		$prefix = 'addFilter';
-		$controlName = (string) \substr($name, \strlen($prefix));
-		$form = $this['filterForm'];
-		
-		if ($prefix === \substr($name, 0, \strlen($prefix)) && \method_exists($form, 'add' . $controlName)) {
-			$method = 'add' . $controlName;
-			
-			$this->addFilterExpression($args[1], \array_shift($args));
-			
-			return $form->$method(...$args);
-		}
-		
-		/** @noinspection PhpUndefinedClassInspection */
-		return parent::__call($name, $args);
 	}
 }

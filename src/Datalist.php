@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Grid;
 
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
+use Nette\ComponentModel\IComponent;
 use Nette\Utils\Paginator;
 use StORM\Collection;
 use StORM\ICollection;
@@ -443,5 +445,45 @@ class Datalist extends Control
 		}
 		
 		return $items;
+	}
+	
+	protected function createComponentFilterForm(): ?IComponent
+	{
+		return new FilterForm();
+	}
+	
+	protected function createComponentPaging(): ?IComponent
+	{
+		return new Paging();
+	}
+	
+	public function getFilterForm(): FilterForm
+	{
+		/* @phpstan-ignore-next-line */
+		return $this['filterForm'];
+	}
+	
+	
+	/**
+	 * @param string $name
+	 * @param mixed[] $args
+	 * @return mixed
+	 */
+	public function __call(string $name, array $args)
+	{
+		$prefix = 'addFilter';
+		$controlName = (string) \substr($name, \strlen($prefix));
+		$form = $this->getFilterForm();
+		
+		if ($prefix === \substr($name, 0, \strlen($prefix)) && \method_exists($form, 'add' . $controlName)) {
+			$method = 'add' . $controlName;
+			
+			$this->addFilterExpression($args[2], \array_shift($args), \array_shift($args));
+			
+			return $form->$method(...$args);
+		}
+		
+		/** @noinspection PhpUndefinedClassInspection */
+		return parent::__call($name, $args);
 	}
 }

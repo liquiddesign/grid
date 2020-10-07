@@ -4,11 +4,7 @@
 	<table class="table table-sm lqd-table">
 		<thead class="admin-head">
 		{foreach $columns as $column}
-			<th>
-				<a n:tag-if="$column->isOrdable()" href="{link this order=>$column->getOrderExpression() . '-' . $control->getDirection(true)}">
-					{$column->getTableHead()|noescape}
-				</a>
-			</th>
+			{$column->renderHeaderCell()|noescape}
 		{/foreach}
 		</thead>
 		{$control->getRows()}

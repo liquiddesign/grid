@@ -9,16 +9,22 @@ use Nette\Utils\Html;
 use StORM\Collection;
 
 /**
- * @method onRender(\Nette\Utils\Html $tdWrapper, object $object)
+ * @method onRender(\Nette\Utils\Html $th)
+ * @method onRenderCell(\Nette\Utils\Html $td, object $object)
  */
 class Column
 {
 	use SmartObject;
 	
 	/**
-	 * @var callable[]&callable(\Grid\Form ): void[] ; Called after render
+	 * @var callable[]
 	 */
 	public $onRender;
+	
+	/**
+	 * @var callable[]
+	 */
+	public $onRenderCell;
 	
 	private int $id;
 	
@@ -36,8 +42,6 @@ class Column
 	 * @var callable
 	 */
 	private $dataCallback;
-	
-	private string $wrapperTag;
 	
 	private \Nette\Utils\Html $wrapper;
 	
@@ -63,12 +67,11 @@ class Column
 	 */
 	public function __construct(Datagrid $datagrid, $th, $td, callable $dataCallback, ?string $orderName = null, array $wrapperAttributes = [])
 	{
+		$this->datagrid = $datagrid;
 		$this->th = $th;
 		$this->td = $td;
 		$this->dataCallback = $dataCallback;
-		$this->wrapperTag = 'th';
 		$this->orderExpression = $orderName;
-		$this->datagrid = $datagrid;
 		$this->wrapperAttributes = $wrapperAttributes;
 	}
 	
@@ -92,24 +95,40 @@ class Column
 		return $this->id;
 	}
 	
-	public function getWrapper(): Html
-	{
-		return $this->wrapper ?? $this->wrapper = Html::el($this->wrapperTag);
-	}
-	
 	public function getTableHead(): string
 	{
 		return $this->th;
 	}
 	
-	public function renderCell(object $object): string
+	public function renderHeaderCell(): Html
 	{
-		$tdWrapper = Html::el('td');
-		$parameters = \call_user_func_array($this->dataCallback, [$object, $this->container ?: $this->datagrid, $tdWrapper]);
+		$th = Html::el('th');
+		foreach ($this->wrapperAttributes as $name => $value) {
+			$th->setAttribute($name, $value);
+		}
+		
+		if ($this->isOrdable()) {
+			$a = Html::el('a');
+			$a->setAttribute('href', $this->datagrid->link('this', ['order' => $this->getOrderExpression() . '-' . $this->datagrid->getDirection(true)]));
+			$a->setHtml($this->th);
+			$th->setHtml($a);
+		} else {
+			$th->setHtml($this->th);
+		}
+		
+		$this->onRender($th);
+		
+		return $th;
+	}
+	
+	public function renderCell(object $object): Html
+	{
+		$td = Html::el('td');
+		$parameters = \call_user_func_array($this->dataCallback, [$object, $this->container ?: $this->datagrid, $td]);
 		$args = [];
 		
 		if ($parameters === null) {
-			return '';
+			return $td;
 		}
 
 		$parameters = !\is_array($parameters) ? [$parameters] : $parameters;
@@ -118,11 +137,11 @@ class Column
 			$args[] = $p instanceof BaseControl ? (string) $p->getControlPart() : $p;
 		}
 		
-		$tdWrapper->setHtml(\vsprintf($this->td, $args));
+		$td->setHtml(\vsprintf($this->td, $args));
 		
-		$this->onRender($tdWrapper, $object);
+		$this->onRenderCell($td, $object);
 		
-		return $tdWrapper;
+		return $td;
 	}
 	
 	public function getTableDataExpression(): string
