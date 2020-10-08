@@ -107,10 +107,18 @@ class Datalist extends Control
 	 */
 	protected $nestingCallback = null;
 	
-	public function __construct(ICollection $source)
+	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null)
 	{
 		$this->paginator = new Paginator();
 		$this->source = $source;
+		
+		if ($defaultOnPage !== null) {
+			$this->setDefaultOnPage($defaultOnPage);
+		}
+		
+		if ($defaultOrderExpression !== null) {
+			$this->setDefaultOrder($defaultOrderExpression, $defaultOrderDir ?: $this->defaultDirection);
+		}
 		
 		if (!($source instanceof Collection)) {
 			return;
