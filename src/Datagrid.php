@@ -225,7 +225,7 @@ class Datagrid extends Datalist
 	{
 		$this->template->columns = $this->columns;
 		$this->template->paginator = $this->paginator;
-		$this->template->render(__DIR__ . '/Datagrid.latte');
+		$this->template->render(__DIR__ . '/datagrid.latte');
 	}
 
 	protected function createComponentForm(): ?IComponent

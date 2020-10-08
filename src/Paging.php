@@ -12,11 +12,14 @@ use Nette\Application\UI\Control;
  */
 class Paging extends Control
 {
-	public function render(Datalist $list): void
+	public function render(): void
 	{
-		$this->template->page = $list->getName() . '-page';
-		$this->template->onpage = $list->getName() . '-onpage';
-		$this->template->paginator = $list->getPaginator(true);
-		$this->template->render(__DIR__ . '/Paging.latte');
+		$this->template->page = $this->getParent()->getName() . '-page';
+		$this->template->onpage =  $this->getParent()->getName() . '-onpage';
+		$this->template->paginator =  $this->getParent()->getPaginator(true);
+		$parentFilename = (new \ReflectionClass($this->getParent()))->getFileName();
+		$filePath = \substr($parentFilename, 0 , (strrpos($parentFilename, '.'))) . '-paging.latte';
+		
+		$this->template->render(is_file($filePath) ? $filePath : __DIR__ . '/paging.latte');
 	}
 }
