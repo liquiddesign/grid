@@ -1,5 +1,5 @@
 <div class="pagination">
-	On page: <a href="{plink this $onpage => 5}">5</a> <a href="{link this, $onpage => 10}">10</a> <a href="{link this, $onpage => 20}">20</a>  &nbsp;|&nbsp;
+	On page: <a href="{plink this $onpage => 5}">5</a> <a href="{plink this, $onpage => 10}">10</a> <a href="{plink this, $onpage => 20}">20</a>  &nbsp;|&nbsp;
 	{if !$paginator->isFirst()}
 		<a href="{plink this $page => 1}">První</a> &nbsp;|&nbsp; <a href="{plink this $page => $paginator->page-1}">Předchozí</a> &nbsp;|&nbsp;
 	{/if}
