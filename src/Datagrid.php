@@ -44,7 +44,7 @@ class Datagrid extends Datalist
 	/**
 	 * @var callable[]
 	 */
-	protected array $actions;
+	protected array $actions = [];
 	
 	public function getSourceIdName(): string
 	{
@@ -101,9 +101,11 @@ class Datagrid extends Datalist
 		}, $td, $orderExpression, $wrapperAttributes);
 	}
 	
-	public function handleMicroSignal(string $name, string $id): void
+	public function handleProcess(string $name, string $id): void
 	{
-		if (!isset($this->actions[$name]) && $object = $this->getSource()->where($this->getSourceIdName(), $id)->first()) {
+		$object = $this->getSource()->where($this->getSourceIdName(), $id)->first();
+		
+		if (!isset($this->actions[$name]) || !$object) {
 			return;
 		}
 		\call_user_func($this->actions[$name], $object, $this);
@@ -116,9 +118,8 @@ class Datagrid extends Datalist
 		$this->actions[$id] = $actionCallback;
 		
 		return $this->addColumn($th, static function ($item) use ($properties, $parent, $id) {
-			$vars = [];
 			$idName = $parent->getSourceIdName();
-			$properties = [$parent->link('microSignal!', [$id, $item->$idName])];
+			$vars = [$parent->link('process!', [$id, $item->$idName])];
 			$properties += !\is_array($properties) ? [$properties] : $properties;
 			
 			foreach ($properties as $property) {
