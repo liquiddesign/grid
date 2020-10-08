@@ -16,15 +16,15 @@ class OrderForm extends Form
 		$this->addSelect('order', null, $options);
 		
 		/* @phpstan-ignore-next-line */
-		$this->onAnchor[] = function (OnpageForm $form): void {
+		$this->onAnchor[] = function (OrderForm $form): void {
 			$datalist = $form->lookup(Datalist::class);
 			$name = $datalist->getName();
-			$form->getAction()->setParameter("$name-order'", null);
-			$form['order']->setHtmlAttribute('name', "$name-order'");
+			$form->getAction()->setParameter("$name-order", null);
+			$form['order']->setHtmlAttribute('name', "$name-order");
 			$form['order']->setDefaultValue($datalist->getOrderParameter());
 		};
 		
-		$this->onValidate[] = function (OnpageForm $form) {
+		$this->onValidate[] = function (OrderForm $form) {
 			$datalist = $form->lookup(Datalist::class);
 			// prepare for autoCanonization
 			if ($form['order']->getValue() === null) {

@@ -21,6 +21,6 @@ class Paging extends Control
 		$parentFilename = (new \ReflectionClass($this->getParent()))->getFileName();
 		$filePath = \substr($parentFilename, 0 , (strrpos($parentFilename, '.'))) . '-paging.latte';
 		
-		$this->template->render($this->template->file ? $this->template->file : (\is_file($filePath) ? $filePath : __DIR__ . '/paging.latte'));
+		$this->template->render(isset($this->template->file) ? $this->template->file : (\is_file($filePath) ? $filePath : __DIR__ . '/paging.latte'));
 	}
 }
