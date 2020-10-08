@@ -13,24 +13,31 @@ class OrderForm extends Form
 		parent::__construct();
 		
 		$this->setMethod('get');
-		$this->addSelect('order', null, $options);
+		/** @var \Nette\Forms\Controls\SelectBox $select */
+		$select = $this->addSelect('order', null, $options);
 		
 		/* @phpstan-ignore-next-line */
-		$this->onAnchor[] = function (OrderForm $form): void {
+		$this->onAnchor[] = function (OrderForm $form) use ($select): void {
+			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
 			$name = $datalist->getName();
 			$form->getAction()->setParameter("$name-order", null);
-			$form['order']->setHtmlAttribute('name', "$name-order");
-			$form['order']->setDefaultValue($datalist->getOrderParameter());
+			$select->setHtmlAttribute('name', "$name-order");
+			$select->setDefaultValue($datalist->getOrderParameter());
 		};
 		
-		$this->onValidate[] = function (OrderForm $form) {
+		/* @phpstan-ignore-next-line */
+		$this->onValidate[] = function (OrderForm $form) use ($select): void {
+			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
+
 			// prepare for autoCanonization
-			if ($form['order']->getValue() === null) {
-				$form['order']->setDefaultValue($datalist->getOrderParameter());
-				$form['order']->cleanErrors();
+			if ($select->getValue() !== null) {
+				return;
 			}
+			
+			$select->setDefaultValue($datalist->getOrderParameter());
+			$select->cleanErrors();
 		};
 	}
 }

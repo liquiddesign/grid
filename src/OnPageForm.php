@@ -13,24 +13,31 @@ class OnPageForm extends Form
 		parent::__construct();
 		
 		$this->setMethod('get');
-		$this->addSelect('onpage', null, $options);
+		/** @var \Nette\Forms\Controls\SelectBox $select */
+		$select = $this->addSelect('onpage', null, $options);
 		
 		/* @phpstan-ignore-next-line */
-		$this->onAnchor[] = function (OnpageForm $form): void {
+		$this->onAnchor[] = function (OnPageForm $form) use ($select): void {
+			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
 			$name = $datalist->getName();
 			$form->getAction()->setParameter("$name-onpage", null);
-			$form['onpage']->setHtmlAttribute('name', "$name-onpage");
-			$form['onpage']->setDefaultValue($datalist->getOnPage());
+			$select->setHtmlAttribute('name', "$name-onpage");
+			$select->setDefaultValue($datalist->getOnPage());
 		};
 		
-		$this->onValidate[] = function (OnpageForm $form) {
+		/* @phpstan-ignore-next-line */
+		$this->onValidate[] = function (OnPageForm $form) use ($select): void {
+			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
+
 			// prepare for autoCanonization
-			if ($form['onpage']->getValue() === null) {
-				$form['onpage']->setDefaultValue($datalist->getOnPage());
-				$form['onpage']->cleanErrors();
+			if ($select->getValue() !== null) {
+				return;
 			}
+			
+			$select->setDefaultValue($datalist->getOnPage());
+			$select->cleanErrors();
 		};
 	}
 }

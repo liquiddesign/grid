@@ -6,6 +6,7 @@ namespace Grid;
 
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Controls\Button;
 
 class FilterForm extends Form
 {
@@ -23,7 +24,12 @@ class FilterForm extends Form
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
 				$form->getAction()->setParameter("$datalist-$name", null);
-				$component->setHtmlAttribute('name', "$datalist-$name");
+				
+				if ($component instanceof Button) {
+					$component->setHtmlAttribute('name', '');
+				} else {
+					$component->setHtmlAttribute('name', "$datalist-$name");
+				}
 			}
 		};
 	}

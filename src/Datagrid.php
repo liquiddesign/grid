@@ -11,7 +11,6 @@ use Nette\Forms\Controls\Checkbox;
 use Nette\InvalidStateException;
 use Nette\Utils\Html;
 use StORM\Collection;
-use StORM\Entity;
 
 /**
  * Class Datagrid
@@ -108,6 +107,7 @@ class Datagrid extends Datalist
 		if (!isset($this->actions[$name]) || !$object) {
 			return;
 		}
+
 		\call_user_func($this->actions[$name], $object, $this);
 	}
 	

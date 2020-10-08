@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Grid;
 
 use Nette\Application\UI\Control;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
 use Nette\Utils\Paginator;
 use StORM\Collection;
@@ -41,7 +40,7 @@ class Datalist extends Control
 	/**
 	 * @persistent
 	 */
-	public int $page = 1;
+	public ?int $page = null;
 	
 	/**
 	 * @persistent
@@ -123,7 +122,7 @@ class Datalist extends Control
 		if (!($source instanceof Collection)) {
 			return;
 		}
-
+		
 		foreach ($source->getRepository()->getStructure()->getColumns(true) as $column) {
 			$this->allowedOrderColumn[$column->getPropertyName()] = $column->getName();
 		}
@@ -247,7 +246,7 @@ class Datalist extends Control
 	
 	public function getPage(): int
 	{
-		return $this->page;
+		return $this->page ?: 1;
 	}
 	
 	public function setOnPage(?int $onPage): void
@@ -287,19 +286,16 @@ class Datalist extends Control
 			if (isset($params['order']) && $this->defaultOrder !== null && ($this->defaultOrder . '-' . $this->defaultDirection) === $params['order']) {
 				$params['order'] = null;
 			}
-		}
-		
-		if (!$this->autoCanonicalize) {
-			if ($params['page'] === null) {
-				// default page
-				$params['page'] = 1;
+			
+			if (isset($params['page']) && (int) $params['page'] === 1) {
+				$params['page'] = null;
 			}
 		}
 		
 		if (!$this->filters) {
 			return;
 		}
-
+		
 		foreach ($this->filters as $filter => $value) {
 			$params[$filter] = $value;
 		}
@@ -343,7 +339,7 @@ class Datalist extends Control
 			if (isset($this->orderExpressions[$this->getOrder()])) {
 				\call_user_func_array($this->orderExpressions[$this->getOrder()], [$filteredSource, $this->getDirection()]);
 			}
-
+			
 			if (isset($this->allowedOrderColumn[$this->getOrder()])) {
 				$filteredSource->orderBy([$this->allowedOrderColumn[$this->getOrder()] => $this->getDirection()]);
 			}
@@ -374,7 +370,7 @@ class Datalist extends Control
 		
 		return $this->paginator;
 	}
-
+	
 	/**
 	 * @return \StORM\Entity[]|object[]
 	 */
@@ -401,6 +397,12 @@ class Datalist extends Control
 	{
 		$this->nestingCallback = $callback;
 	}
+	
+	public function getFilterForm(): FilterForm
+	{
+		/* @phpstan-ignore-next-line */
+		return $this['filterForm'];
+	}
 
 	public static function loadSession(\Nette\Http\SessionSection $session): callable
 	{
@@ -412,7 +414,7 @@ class Datalist extends Control
 			if (isset($params['onpage']) || !isset($session->onpage)) {
 				return;
 			}
-
+			
 			$datalist->onpage = $session->onpage;
 		};
 	}
@@ -464,14 +466,7 @@ class Datalist extends Control
 	{
 		return new Paging();
 	}
-	
-	public function getFilterForm(): FilterForm
-	{
-		/* @phpstan-ignore-next-line */
-		return $this['filterForm'];
-	}
-	
-	
+
 	/**
 	 * @param string $name
 	 * @param mixed[] $args

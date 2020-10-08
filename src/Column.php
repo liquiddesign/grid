@@ -43,8 +43,6 @@ class Column
 	 */
 	private $dataCallback;
 	
-	private \Nette\Utils\Html $wrapper;
-	
 	private ?\Nette\Forms\Container $container = null;
 	
 	private ?string $orderExpression;
@@ -58,7 +56,7 @@ class Column
 	
 	/**
 	 * Column constructor.
-	 * @param Datagrid $datagrid
+	 * @param \Grid\Datagrid $datagrid
 	 * @param \Nette\Utils\Html|string $th
 	 * @param \Nette\Utils\Html|string $td
 	 * @param callable $dataCallback
@@ -103,6 +101,7 @@ class Column
 	public function renderHeaderCell(): Html
 	{
 		$th = Html::el('th');
+
 		foreach ($this->wrapperAttributes as $name => $value) {
 			$th->setAttribute($name, $value);
 		}
