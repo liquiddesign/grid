@@ -106,10 +106,18 @@ class Datalist extends Control
 	 */
 	protected $nestingCallback = null;
 	
+	/**
+	 * @var callable|null
+	 */
+	protected $itemCountCallback = null;
+	
 	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null)
 	{
 		$this->paginator = new Paginator();
 		$this->source = $source;
+		$this->itemCountCallback = function (ICollection $filteredSource) {
+			return $filteredSource->count();
+		};
 		
 		if ($defaultOnPage !== null) {
 			$this->setDefaultOnPage($defaultOnPage);
@@ -362,6 +370,11 @@ class Datalist extends Control
 		return $this->filteredSource = $filteredSource;
 	}
 	
+	public function setItemCountCallback(callable $callback): void
+	{
+		$this->itemCountCallback = $callback;
+	}
+	
 	public function getPaginator(bool $current = false): \Nette\Utils\Paginator
 	{
 		if ($current) {
@@ -374,7 +387,9 @@ class Datalist extends Control
 			$this->paginator->setItemsPerPage($this->getOnPage());
 		}
 		
-		$this->paginator->setItemCount($this->getFilteredSource()->count());
+		if ($this->itemCountCallback !== null) {
+			$this->paginator->setItemCount(\call_user_func($this->itemCountCallback, $this->getFilteredSource()));
+		}
 		
 		return $this->paginator;
 	}
@@ -390,8 +405,8 @@ class Datalist extends Control
 		
 		$source = $this->getFilteredSource();
 		
-		if ($this->getPaginator()->getItemsPerPage() !== 1) {
-			$source->setPage($this->getPaginator()->getPage(), $this->getPaginator()->getItemsPerPage());
+		if ($this->getOnPage()) {
+			$source->setPage($this->getPage(), $this->getOnPage());
 		}
 		
 		$this->onLoad($source);
