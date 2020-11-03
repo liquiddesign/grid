@@ -90,7 +90,7 @@ class Datalist extends Control
 	
 	protected bool $autoCanonicalize = false;
 	
-	protected Paginator $paginator;
+	protected ?Paginator $paginator = null;
 	
 	protected ICollection $source;
 	
@@ -113,7 +113,6 @@ class Datalist extends Control
 	
 	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null)
 	{
-		$this->paginator = new Paginator();
 		$this->source = $source;
 		$this->itemCountCallback = function (ICollection $filteredSource) {
 			return $filteredSource->count();
@@ -375,11 +374,13 @@ class Datalist extends Control
 		$this->itemCountCallback = $callback;
 	}
 	
-	public function getPaginator(bool $current = false): \Nette\Utils\Paginator
+	public function getPaginator(bool $refresh = false): \Nette\Utils\Paginator
 	{
-		if ($current) {
+		if ($this->paginator && !$refresh) {
 			return $this->paginator;
 		}
+		
+		$this->paginator = new Paginator();
 		
 		$this->paginator->setPage($this->getPage());
 		
