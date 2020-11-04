@@ -19,14 +19,17 @@ class FilterForm extends Form
 		/* @phpstan-ignore-next-line */
 		$this->onAnchor[] = function (FilterForm $form): void {
 			$datalist = $form->lookup(Datalist::class)->getName();
-			
+			$submit = false;
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
 				$form->getAction()->setParameter("$datalist-$name", null);
 				
 				if ($component instanceof Button) {
-					$component->setHtmlAttribute('name', '');
+					if (!$submit) {
+						$component->setHtmlAttribute('name', '');
+						$submit = true;
+					}
 				} else {
 					$component->setHtmlAttribute('name', "$datalist-$name");
 				}
