@@ -11,6 +11,8 @@ use Nette\Forms\Controls\Checkbox;
 use Nette\InvalidStateException;
 use Nette\Utils\Html;
 use StORM\Collection;
+use StORM\Entity;
+use StORM\ICollection;
 
 /**
  * Class Datagrid
@@ -31,6 +33,21 @@ class Datagrid extends Datalist
 	public $onRenderRow;
 	
 	/**
+	 * @var callable|null
+	 */
+	protected $encodeIdCallback = null;
+	
+	/**
+	 * @var callable|null
+	 */
+	protected $decodeIdCallback = null;
+	
+	/**
+	 * @var callable|null
+	 */
+	protected $getIdCallback = null;
+	
+	/**
 	 * @var \Grid\Column[]
 	 */
 	protected array $columns = [];
@@ -44,6 +61,32 @@ class Datagrid extends Datalist
 	 * @var callable[]
 	 */
 	protected array $actions = [];
+	
+	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null, bool $encodeId = false)
+	{
+		if ($encodeId) {
+			$this->encodeIdCallback = static function ($id) {
+				return \bin2hex($id);
+			};
+			
+			$this->decodeIdCallback = static function ($id) {
+				return \hex2bin($id);
+			};
+		}
+		
+		if ($source instanceof Collection) {
+			$this->getIdCallback = static function (Entity $object) {
+				return $object->getPK();
+			};
+		}
+		
+		parent::__construct($source, $defaultOnPage, $defaultOrderExpression, $defaultOrderDir);
+	}
+	
+	public function setGetIdCallback(callable $callable): void
+	{
+		$this->getIdCallback = $callable;
+	}
 	
 	public function getSourceIdName(): string
 	{
@@ -59,13 +102,19 @@ class Datagrid extends Datalist
 	 */
 	public function getSelectedIds(): array
 	{
-		return \array_values($this->getForm()->getHttpData($this->getForm()::DATA_TEXT | $this->getForm()::DATA_KEYS, '__selector[]'));
+		$array = \array_values($this->getForm()->getHttpData($this->getForm()::DATA_TEXT | $this->getForm()::DATA_KEYS, '__selector[]'));
+		
+		if ($this->decodeIdCallback) {
+			$array = \array_map($this->decodeIdCallback, $array);
+		}
+		
+		return $array;
 	}
 	
 	public function deletedSelected(?string $idName = null): int
 	{
 		$idName = $idName ?: $this->getSourceIdName();
-
+		
 		return $this->getSource()->where($idName, $this->getSelectedIds())->delete();
 	}
 	
@@ -85,7 +134,7 @@ class Datagrid extends Datalist
 		
 		return $column;
 	}
-
+	
 	public function addColumnText($th, $properties, $td, ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
 		return $this->addColumn($th, static function ($item) use ($properties) {
@@ -107,7 +156,7 @@ class Datagrid extends Datalist
 		if (!isset($this->actions[$name]) || !$object) {
 			return;
 		}
-
+		
 		\call_user_func($this->actions[$name], $object, $this);
 	}
 	
@@ -141,33 +190,48 @@ class Datagrid extends Datalist
 		$ids = \array_keys($this->getItemsOnPage());
 		
 		foreach ($ids as $id) {
+			$encodedId = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, $id) : $id;
 			$values[$id] = [];
 			$inputs = $inputNames === null ? $this->inputs : \array_intersect_key($this->inputs, \array_flip($inputNames));
 			
 			foreach ($inputs as $name => $settings) {
 				$httpData = $this->getForm()->getHttpData($flags, $name . '[]');
+				$mutation = null;
 				[$defaultValue, $isCheckbox] = $settings;
 				
+				if ($this->source instanceof Collection) {
+					$column = $this->source->getRepository()->getStructure()->getColumn($name);
+					if ($column->hasMutations()) {
+						$mutation = $this->source->getConnection()->getMutation();
+					}
+				}
+				
 				if ($isCheckbox) {
-					$values[$id][$name] = isset($httpData[$id]);
-				} elseif ($httpData[$id] !== $defaultValue) {
-					$values[$id][$name] = $httpData[$id];
+					$values[$id][$name] = $mutation ? [$mutation => isset($httpData[$encodedId])] : isset($httpData[$encodedId]);
+				} elseif ($httpData[$encodedId] !== $defaultValue) {
+					
+					$values[$id][$name] = $mutation ? [$mutation => $httpData[$encodedId]] : $httpData[$encodedId];
 				}
 			}
 		}
 		
 		return $values;
 	}
-
+	
 	public function addColumnInput($th, string $name, callable $callback, $setValueExpression = '', $defaultValue = '', ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
 		$this->getForm()->addComponent(new Multiplier($callback), $name);
 		
 		$this->registerInput($name, $defaultValue, \call_user_func($callback, '') instanceof Checkbox);
 		
-		// TODO get row ID callbacl -> never $object->getPK() consider object
+		if (!$this->getIdCallback) {
+			throw new \DomainException('ID callback is not set, call ->setGetIdCallback()');
+		}
+		
 		return $this->addColumn($th, function ($object, $datagrid) use ($name, $setValueExpression) {
-			$input = $datagrid['form'][$name][$object->getPK()];
+			$id = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, \call_user_func($this->getIdCallback, $object)) : \call_user_func($this->getIdCallback, $object);
+			
+			$input = $datagrid['form'][$name][$id];
 			
 			if (\is_string($setValueExpression)) {
 				$property = $setValueExpression ?: $name;
@@ -200,18 +264,18 @@ class Datagrid extends Datalist
 		/* @phpstan-ignore-next-line */
 		return $this['form'];
 	}
-
+	
 	public function getRows(): Html
 	{
 		$body = Html::el('tbody');
-
+		
 		foreach ($this->getItemsOnPage() as $id => $entity) {
 			$tr = Html::el('tr');
 			
 			foreach ($this->columns as $column) {
 				$tr->addHtml($column->renderCell($entity));
 			}
-
+			
 			$this->onRenderRow($tr, $entity, $id);
 			
 			$body->addHtml($tr);
@@ -221,19 +285,19 @@ class Datagrid extends Datalist
 		
 		return $body;
 	}
-
+	
 	public function render(): void
 	{
 		$this->template->columns = $this->columns;
 		$this->template->paginator = $this->paginator;
 		$this->template->render(__DIR__ . '/datagrid.latte');
 	}
-
+	
 	protected function createComponentForm(): ?IComponent
 	{
 		return new Form();
 	}
-
+	
 	protected function registerInput(string $name, $defaultValue, bool $isCheckboxType = false): void
 	{
 		$this->inputs[$name] = [$defaultValue, $isCheckboxType];
