@@ -19,6 +19,7 @@ class FilterForm extends Form
 		/* @phpstan-ignore-next-line */
 		$this->onAnchor[] = function (FilterForm $form): void {
 			$datalist = $form->lookup(Datalist::class)->getName();
+			
 			$submit = false;
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
@@ -32,6 +33,16 @@ class FilterForm extends Form
 					}
 				} else {
 					$component->setHtmlAttribute('name', "$datalist-$name");
+				}
+			}
+		};
+		
+		/* @phpstan-ignore-next-line */
+		$this->onRender[] = function (FilterForm $form): void {
+			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
+				if ($component = $this->getComponent($filter)) {
+					/** @var \Nette\Forms\Controls\BaseControl $component */
+					$component->setDefaultValue($value);
 				}
 			}
 		};
