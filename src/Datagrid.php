@@ -83,6 +83,12 @@ class Datagrid extends Datalist
 		parent::__construct($source, $defaultOnPage, $defaultOrderExpression, $defaultOrderDir);
 	}
 	
+	public function setIdCallbacks(?callable $encodeCallback, ?callable $decodeCallback): void
+	{
+		$this->encodeIdCallback = $encodeCallback;
+		$this->decodeIdCallback = $decodeCallback;
+	}
+	
 	public function setGetIdCallback(callable $callable): void
 	{
 		$this->getIdCallback = $callable;
