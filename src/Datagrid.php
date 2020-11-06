@@ -19,6 +19,19 @@ use StORM\ICollection;
  * @property \Nette\Bridges\ApplicationLatte\Template|\StdClass $template
  * @method onRenderRow(\Nette\Utils\Html $tr, $entity, int|string $id)
  * @method onRender(\Nette\Utils\Html $body, array|\Grid\Column[] $columns)
+ * @method \Nette\Forms\Controls\TextInput addFilterText(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
+ * @method \Nette\Forms\Controls\TextInput addFilterPassword(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
+ * @method \Nette\Forms\Controls\TextArea addFilterTextArea(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
+ * @method \Nette\Forms\Controls\TextInput addFilterEmail(callable $filterExpression, ?string $defaultValue, string $name, $label = null)
+ * @method \Nette\Forms\Controls\TextInput addFilterInteger(callable $filterExpression, ?string $defaultValue, string $name, $label = null)
+ * @method \Nette\Forms\Controls\UploadControl addFilterUpload(callable $filterExpression, ?string $defaultValue, string $name, $label = null)
+ * @method \Nette\Forms\Controls\UploadControl addFilterMultiUpload(callable $filterExpression, ?string $defaultValue, string $name, $label = null)
+ * @method \Nette\Forms\Controls\Checkbox addFilterCheckbox(callable $filterExpression, ?string $defaultValue, string $name, $caption = null)
+ * @method \Nette\Forms\Controls\RadioList addFilterRadioList(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null)
+ * @method \Nette\Forms\Controls\CheckboxList addFilterCheckboxList(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null)
+ * @method \Nette\Forms\Controls\SelectBox addFilterSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, int $size = null)
+ * @method \Nette\Forms\Controls\MultiSelectBox addFilterMultiSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, int $size = null)
+ * @method \Nette\Forms\Controls\UploadControl addFilterImage(callable $filterExpression, ?string $defaultValue, string $name, string $src = null, string $alt = null)
  */
 class Datagrid extends Datalist
 {
