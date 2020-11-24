@@ -111,6 +111,11 @@ class Datalist extends Control
 	 */
 	protected $itemCountCallback = null;
 	
+	/**
+	 * @var bool[]
+	 */
+	private array $statefulFilters = [];
+	
 	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null)
 	{
 		$this->source = $source;
@@ -197,9 +202,9 @@ class Datalist extends Control
 		return $this->getOrder() . '-' . $this->getDirection();
 	}
 	
-	public function setAllowedOrderColumns(array $columns): void
+	public function setAllowedOrderColumns(array $columns, bool $merge = false): void
 	{
-		$this->allowedOrderColumn = $columns;
+		$this->allowedOrderColumn = $merge ? $this->allowedOrderColumn + $columns : $columns;
 	}
 	
 	public function addOrderExpression(string $name, callable $callback): void
@@ -236,9 +241,9 @@ class Datalist extends Control
 		}
 	}
 	
-	public function setAllowedRepositoryFilters(array $list): void
+	public function setAllowedRepositoryFilters(array $list, bool $merge = false): void
 	{
-		$this->allowedRepositoryFilters = $list;
+		$this->allowedRepositoryFilters = $merge ? $this->allowedRepositoryFilters + $list : $list;
 	}
 	
 	public function setFilters(array $filters): void
@@ -283,6 +288,7 @@ class Datalist extends Control
 		foreach ($params as $name => $value) {
 			if (isset($this->filterExpressions[$name])) {
 				$this->filters[$name] = $value;
+				$this->statefulFilters[$name] = true;
 			}
 		}
 	}
@@ -312,7 +318,9 @@ class Datalist extends Control
 		}
 		
 		foreach ($this->filters as $filter => $value) {
-			$params[$filter] = $value;
+			if (isset($this->statefulFilters[$filter])) {
+				$params[$filter] = $value;
+			}
 		}
 	}
 	
