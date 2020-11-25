@@ -248,7 +248,13 @@ class Datalist extends Control
 	
 	public function setFilters(array $filters): void
 	{
-		$this->filters = $filters;
+		foreach ($filters as $name => $value) {
+			if ($value !== null) {
+				$this->filters[$name] = $value;
+			} else {
+				unset($this->filters[$name]);
+			}
+		}
 	}
 	
 	/**

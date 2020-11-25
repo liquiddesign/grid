@@ -40,7 +40,7 @@ class FilterForm extends Form
 		/* @phpstan-ignore-next-line */
 		$this->onRender[] = function (FilterForm $form): void {
 			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
-				if ($component = $this->getComponent($filter)) {
+				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
 					/** @var \Nette\Forms\Controls\BaseControl $component */
 					$component->setDefaultValue($value);
 				}
