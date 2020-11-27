@@ -79,11 +79,11 @@ class Datagrid extends Datalist
 	{
 		if ($encodeId) {
 			$this->encodeIdCallback = static function ($id) {
-				return \bin2hex($id);
+				return (string) \bin2hex((string) $id);
 			};
 			
 			$this->decodeIdCallback = static function ($id) {
-				return \hex2bin($id);
+				return (string) \hex2bin((string) $id);
 			};
 		}
 		
@@ -220,7 +220,7 @@ class Datagrid extends Datalist
 				
 				if ($this->source instanceof Collection) {
 					$column = $this->source->getRepository()->getStructure()->getColumn($name);
-					if ($column->hasMutations()) {
+					if ($column && $column->hasMutations()) {
 						$mutation = $this->source->getConnection()->getMutation();
 					}
 				}
