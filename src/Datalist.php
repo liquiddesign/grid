@@ -202,6 +202,11 @@ class Datalist extends Control
 		return $this->getOrder() . '-' . $this->getDirection();
 	}
 	
+	public function isOrderBy(string $order, ?string $direction = null): bool
+	{
+		return $order === $this->getOrder() && ($direction === null || $direction === $this->getDirection());
+	}
+	
 	public function setAllowedOrderColumns(array $columns, bool $merge = false): void
 	{
 		$this->allowedOrderColumn = $merge ? $this->allowedOrderColumn + $columns : $columns;
