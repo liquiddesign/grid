@@ -309,7 +309,12 @@ class Datagrid extends Datalist
 	{
 		$this->template->columns = $this->columns;
 		$this->template->paginator = $this->paginator;
-		$this->template->render(__DIR__ . '/datagrid.latte');
+		
+		if (!$this->template->getFile()) {
+			$this->template->setFile(__DIR__ . '/datagrid.latte');
+		}
+		
+		$this->template->render();
 	}
 	
 	protected function createComponentForm(): ?IComponent
