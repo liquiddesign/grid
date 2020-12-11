@@ -146,22 +146,35 @@ class Datagrid extends Datalist
 	 */
 	public function addColumn($th, callable $dataCallback, $td = '%s', ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
+		if ($orderExpression && !isset($this->allowedOrderColumn[$orderExpression])) {
+			$this->allowedOrderColumn[$orderExpression] = $orderExpression;
+		}
+		
 		$id = \count($this->columns);
+		
 		$column = new Column($this, $th, $td, $dataCallback, $orderExpression, $wrapperAttributes);
 		$column->setId($id);
-		$this->columns[$id] = $column;
 		
-		return $column;
+		return $this->columns[$id] = $column;
 	}
 	
-	public function addColumnText($th, $properties, $td, ?string $orderExpression = null, array $wrapperAttributes = []): Column
+	public function addColumnText($th, $expressions, $td, ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
-		return $this->addColumn($th, static function ($item) use ($properties) {
+		return $this->addColumn($th, static function ($item) use ($expressions) {
 			$vars = [];
-			$properties = !\is_array($properties) ? [$properties] : $properties;
+			$expressions = !\is_array($expressions) ? [$expressions] : $expressions;
 			
-			foreach ($properties as $property) {
-				$vars[] = $item->$property;
+			foreach ($expressions as $expression) {
+				$previous = $item;
+				foreach (\explode('.', $expression) as $property) {
+					if (!\is_object($previous)) {
+						break;
+					}
+					
+					$previous = $previous->$property;
+				}
+				
+				$vars[] = $previous;
 			}
 			
 			return $vars;
