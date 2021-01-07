@@ -132,9 +132,10 @@ class Datagrid extends Datalist
 	
 	public function deletedSelected(?string $idName = null): int
 	{
-		$idName = $idName ?: $this->getSourceIdName();
+		$source = $this->getSource();
+		$idName = $idName ?: $source->getPrefix(true) . $this->getSourceIdName();
 		
-		return $this->getSource()->where($idName, $this->getSelectedIds())->delete();
+		return $source->where($idName, $this->getSelectedIds())->delete();
 	}
 	
 	/**
@@ -183,7 +184,9 @@ class Datagrid extends Datalist
 	
 	public function handleProcess(string $name, string $id): void
 	{
-		$object = $this->getSource()->where($this->getSourceIdName(), $id)->first();
+		$source = $this->getSource();
+		
+		$object = $source->where($source->getPrefix(true) . $this->getSourceIdName(), $id)->first();
 		
 		if (!isset($this->actions[$name]) || !$object) {
 			return;
