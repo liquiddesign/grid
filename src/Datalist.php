@@ -429,7 +429,7 @@ class Datalist extends Control
 		
 		$this->onLoad($source);
 		
-		$this->itemsOnPage = $this->nestingCallback ? $this->getNestedSource($source, null) : $source->toArray();
+		$this->itemsOnPage = $this->nestingCallback && !$this->filters ? $this->getNestedSource($source, null) : $source->toArray();
 		
 		return $this->itemsOnPage;
 	}
