@@ -492,8 +492,8 @@ class Datalist extends Control
 		\call_user_func_array($this->nestingCallback, [$source, $parent]);
 		
 		/* @phpstan-ignore-next-line */
-		foreach ($source as $item) {
-			$items[] = $item;
+		foreach ($source as $key => $item) {
+			$items[$key] = $item;
 			$items = \array_merge($items, $this->getNestedSource($this->getFilteredSource(true), $item));
 		}
 		
