@@ -403,13 +403,11 @@ class Datalist extends Control
 		
 		$this->paginator->setPage($this->getPage());
 		
-		if ($this->getOnPage()) {
-			$this->paginator->setItemsPerPage($this->getOnPage());
-		}
-		
 		if ($this->itemCountCallback !== null) {
 			$this->paginator->setItemCount(\call_user_func($this->itemCountCallback, $this->getFilteredSource()));
 		}
+		
+		$this->paginator->setItemsPerPage($this->getOnPage() ?: $this->paginator->getItemCount());
 		
 		return $this->paginator;
 	}
