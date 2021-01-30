@@ -176,7 +176,7 @@ class Datagrid extends Datalist
 						break;
 					}
 					
-					$previous = $previous->$property;
+					$previous = \is_callable([$previous, $property]) ? \call_user_func([$previous, $property]) : $previous->$property;
 					
 					foreach ($filters[$key] as $f => $args) {
 						$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
