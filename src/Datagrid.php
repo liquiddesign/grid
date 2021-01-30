@@ -161,11 +161,15 @@ class Datagrid extends Datalist
 	
 	public function addColumnText($th, $expressions, $td, ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
-		return $this->addColumn($th, static function ($item) use ($expressions) {
+		$expressions = !\is_array($expressions) ? [$expressions] : $expressions;
+		$filters = $this->parseFilters($expressions);
+		
+		$grid = $this;
+		
+		return $this->addColumn($th, static function ($item) use ($expressions, $grid, $filters) {
 			$vars = [];
-			$expressions = !\is_array($expressions) ? [$expressions] : $expressions;
 			
-			foreach ($expressions as $expression) {
+			foreach ($expressions as $key => $expression) {
 				$previous = $item;
 				foreach (\explode('.', $expression) as $property) {
 					if (!\is_object($previous)) {
@@ -173,6 +177,10 @@ class Datagrid extends Datalist
 					}
 					
 					$previous = $previous->$property;
+					
+					foreach ($filters[$key] as $f => $args) {
+						$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
+					}
 				}
 				
 				$vars[] = $previous;
@@ -341,5 +349,33 @@ class Datagrid extends Datalist
 	protected function registerInput(string $name, $defaultValue, bool $isCheckboxType = false): void
 	{
 		$this->inputs[$name] = [$defaultValue, $isCheckboxType];
+	}
+	
+	private function parseFilters(array &$expressions): array
+	{
+		$filters = [];
+		
+		foreach ($expressions as $key => $expression) {
+			$matches = [];
+			$params = "(?:\:(?:('[^']*'))?([\.0-9]+)?)?";
+			$filter = "(?:\|([a-zA-Z_\.0-9]+)$params$params)?";
+			$tst = \preg_match("/([a-zA-Z_\.0-9]+)$filter$filter/", $expression, $matches);
+			$expressions[$key] = $matches[1];
+			$i = 0;
+			$filters[$key] = [];
+			$currentFilter = null;
+			foreach (\array_slice($matches, 2) as $value) {
+				if ($i % 5 === 0) {
+					$currentFilter = $value;
+					$filters[$key][$currentFilter] = [];
+				} elseif ($value !== '') {
+					$filters[$key][$currentFilter][] = ($i % 5 % 2 === 0) ? \floatval($value) : \trim($value, "'");
+				}
+				
+				$i++;
+			}
+		}
+		
+		return $filters;
 	}
 }
