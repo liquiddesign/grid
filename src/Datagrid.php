@@ -179,6 +179,15 @@ class Datagrid extends Datalist
 					$previous = \is_callable([$previous, $property]) ? \call_user_func([$previous, $property]) : $previous->$property;
 					
 					foreach ($filters[$key] as $f => $args) {
+						foreach ($args as $k => $v) {
+							if (\is_array($v)) {
+								$args[$k] = $item;
+								foreach ($v as $p) {
+									$args[$k] = $args[$k]->$p;
+								}
+							}
+						}
+						
 						$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
 					}
 				}
@@ -359,7 +368,7 @@ class Datagrid extends Datalist
 			$matches = [];
 			$params = "(?:\:(?:('[^']*'))?([\.0-9]+)?)?";
 			$filter = "(?:\|([a-zA-Z_\.0-9]+)$params$params)?";
-			$tst = \preg_match("/([a-zA-Z_\.0-9]+)$filter$filter/", $expression, $matches);
+			\preg_match("/([a-zA-Z_\.0-9]+)$filter$filter/", $expression, $matches);
 			$expressions[$key] = $matches[1];
 			$i = 0;
 			$filters[$key] = [];
@@ -369,7 +378,7 @@ class Datagrid extends Datalist
 					$currentFilter = $value;
 					$filters[$key][$currentFilter] = [];
 				} elseif ($value !== '') {
-					$filters[$key][$currentFilter][] = ($i % 5 % 2 === 0) ? \floatval($value) : \trim($value, "'");
+					$filters[$key][$currentFilter][] = ($i % 5 % 2 === 0) ? (\is_numeric($value) ? \floatval($value) : \explode('.', $value)) : \trim($value, "'");
 				}
 				
 				$i++;
