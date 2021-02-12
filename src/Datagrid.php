@@ -171,25 +171,26 @@ class Datagrid extends Datalist
 			
 			foreach ($expressions as $key => $expression) {
 				$previous = $item;
+				
 				foreach (\explode('.', $expression) as $property) {
 					if (!\is_object($previous)) {
 						break;
 					}
 					
 					$previous = \is_callable([$previous, $property]) ? \call_user_func([$previous, $property]) : $previous->$property;
-					
-					foreach ($filters[$key] as $f => $args) {
-						foreach ($args as $k => $v) {
-							if (\is_array($v)) {
-								$args[$k] = $item;
-								foreach ($v as $p) {
-									$args[$k] = $args[$k]->$p;
-								}
+				}
+				
+				foreach ($filters[$key] as $f => $args) {
+					foreach ($args as $k => $v) {
+						if (\is_array($v)) {
+							$args[$k] = $item;
+							foreach ($v as $p) {
+								$args[$k] = $args[$k]->$p;
 							}
 						}
-						
-						$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
 					}
+					
+					$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
 				}
 				
 				$vars[] = $previous;
