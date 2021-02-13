@@ -8,6 +8,10 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
 
+/**
+ * Class FilterForm
+ * @deprecated use Form with $grid->makeFilterForm() instead
+ */
 class FilterForm extends Form
 {
 	public function __construct(?\Nette\ComponentModel\IContainer $parent = null, ?string $name = null)

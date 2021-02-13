@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Grid;
 
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
+use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Controls\Button;
 use Nette\Utils\Paginator;
 use StORM\Collection;
 use StORM\ICollection;
@@ -439,7 +442,7 @@ class Datalist extends Control
 		$this->nestingCallback = $callback;
 	}
 	
-	public function getFilterForm(): FilterForm
+	public function getFilterForm(): Form
 	{
 		/* @phpstan-ignore-next-line */
 		return $this['filterForm'];
@@ -500,7 +503,45 @@ class Datalist extends Control
 	
 	protected function createComponentFilterForm(): ?IComponent
 	{
-		return new FilterForm();
+		$form =  new Form();
+		$this->makeFilterForm($form);
+		
+		return $form;
+	}
+	
+	protected function makeFilterForm(Form $form): void
+	{
+		$form->setMethod('get');
+		
+		$form->onAnchor[] = function (\Nette\Application\UI\Form $form): void {
+			$datalist = $form->lookup(Datalist::class)->getName();
+			
+			$submit = false;
+			
+			foreach ($form->getComponents(true, BaseControl::class) as $component) {
+				$name = $component->getName();
+				$form->getAction()->setParameter("$datalist-$name", null);
+				
+				if ($component instanceof Button) {
+					if (!$submit) {
+						$component->setHtmlAttribute('name', '');
+						$submit = true;
+					}
+				} else {
+					$component->setHtmlAttribute('name', "$datalist-$name");
+				}
+			}
+		};
+		
+		/* @phpstan-ignore-next-line */
+		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
+			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
+				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
+					/** @var \Nette\Forms\Controls\BaseControl $component */
+					$component->setDefaultValue($value);
+				}
+			}
+		};
 	}
 	
 	protected function createComponentPaging(): ?IComponent
