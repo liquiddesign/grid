@@ -501,7 +501,7 @@ class Datalist extends Control
 		return $items;
 	}
 	
-	protected function createComponentFilterForm(): ?IComponent
+	protected function createComponentFilterForm(): Form
 	{
 		$form =  new Form();
 		$this->makeFilterForm($form);
