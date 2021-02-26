@@ -505,6 +505,10 @@ class Datalist extends Control
 	{
 		$form =  new Form();
 		$this->makeFilterForm($form);
+
+		$form->onSuccess[] = function (Form $form) {
+			$this->setPage(1);
+		};
 		
 		return $form;
 	}
