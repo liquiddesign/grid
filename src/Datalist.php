@@ -443,7 +443,7 @@ class Datalist extends Control
 		$this->nestingCallback = $callback;
 	}
 	
-	public function getFilterForm(): Form
+	public function getFilterForm()
 	{
 		/* @phpstan-ignore-next-line */
 		return $this['filterForm'];
