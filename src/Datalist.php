@@ -6,6 +6,7 @@ namespace Grid;
 
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\ComponentModel\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
@@ -501,7 +502,7 @@ class Datalist extends Control
 		return $items;
 	}
 	
-	protected function createComponentFilterForm(): Form
+	protected function createComponentFilterForm(): Component
 	{
 		$form =  new Form();
 		$this->makeFilterForm($form);
