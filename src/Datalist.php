@@ -162,6 +162,11 @@ class Datalist extends Control
 		return $this->defaultOnPage;
 	}
 	
+	public function getDefaultOrder(): array
+	{
+		return [$this->defaultOrder, $this->defaultDirection];
+	}
+	
 	public function setDefaultOrder(?string $name, string $direction = 'ASC'): void
 	{
 		$this->defaultOrder = $name;
