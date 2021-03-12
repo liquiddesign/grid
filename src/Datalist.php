@@ -547,8 +547,9 @@ class Datalist extends Control
 		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
 			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
 				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
-					/** @var \Nette\Forms\Controls\BaseControl $component */
-					$component->setDefaultValue($value);
+					if ($this->filterDefaultValue[$filter] !== $value) {
+						$component->setDefaultValue($value);
+					}
 				}
 			}
 		};
