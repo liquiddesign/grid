@@ -458,7 +458,6 @@ class Datalist extends Control
 	{
 		$this->setPage(1);
 		$this->setOnPage($this->getDefaultOnPage());
-		$this->setOrder($this->getDefaultOrder()[0], $this->getDefaultOrder()[1]);
 		$this->filters = [];
 		$session->remove();
 	}
