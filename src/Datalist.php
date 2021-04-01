@@ -454,14 +454,6 @@ class Datalist extends Control
 		return $this['filterForm'];
 	}
 
-	public function clearSession(\Nette\Http\SessionSection $session)
-	{
-		$this->setPage(1);
-		$this->setOnPage($this->getDefaultOnPage());
-		$this->filters = [];
-		$session->remove();
-	}
-
 	public static function loadSession(\Nette\Http\SessionSection $session): callable
 	{
 		return function ($datalist, $params) use ($session): void {
