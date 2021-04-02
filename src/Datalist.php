@@ -260,8 +260,13 @@ class Datalist extends Control
 		$this->allowedRepositoryFilters = $merge ? $this->allowedRepositoryFilters + $list : $list;
 	}
 
-	public function setFilters(array $filters): void
+	public function setFilters(?array $filters): void
 	{
+		if ($filters === null) {
+			$this->filters = [];
+			return;
+		}
+		
 		foreach ($filters as $name => $value) {
 			if ($value !== null) {
 				$this->filters[$name] = $value;
@@ -453,66 +458,62 @@ class Datalist extends Control
 		/* @phpstan-ignore-next-line */
 		return $this['filterForm'];
 	}
-
-	public static function loadSession(\Nette\Http\SessionSection $session): callable
+	
+	public static function loadSession(Datalist $datalist, array $params, \Nette\Http\SessionSection $section): void
 	{
-		return function ($datalist, $params) use ($session): void {
-			if (!isset($params['page']) && isset($session->page)) {
-				$datalist->page = $session->page;
-			}
-
-			unset($params['page']);
-
-			if (!isset($params['onpage']) && isset($session->onpage)) {
-				$datalist->onpage = $session->onpage;
-			}
-
-			unset($params['onpage']);
-
-			if (!isset($params['order']) && isset($session->order)) {
-				$datalist->order = $session->order;
-			}
-
-			unset($params['order']);
-
-			if (isset($session->filters)) {
-				$datalist->filters = $session->filters;
-			}
-		};
+		if (!isset($params['page']) && isset($section->page)) {
+			$datalist->page = $section->page;
+		}
+		
+		unset($params['page']);
+		
+		if (!isset($params['onpage']) && isset($section->onpage)) {
+			$datalist->onpage = $section->onpage;
+		}
+		
+		unset($params['onpage']);
+		
+		if (!isset($params['order']) && isset($section->order)) {
+			$datalist->order = $section->order;
+		}
+		
+		unset($params['order']);
+		
+		if (isset($section->filters)) {
+			$datalist->filters = $section->filters;
+		}
 	}
-
-	public static function saveSession(\Nette\Http\SessionSection $session): callable
+	
+	public static function saveSession(Datalist $datalist, array $params, \Nette\Http\SessionSection $section): void
 	{
-		return function ($datalist, $params) use ($session): void {
-			if (isset($params['page'])) {
-				/* @phpstan-ignore-next-line */
-				$session->page = $params['page'];
-			} else {
-				unset($session->page);
-			}
-
-			unset($params['page']);
-
-			if (isset($params['onpage'])) {
-				/* @phpstan-ignore-next-line */
-				$session->onpage = $params['onpage'];
-			} else {
-				unset($session->onpage);
-			}
-
-			unset($params['onpage']);
-
-			if (isset($params['order'])) {
-				/* @phpstan-ignore-next-line */
-				$session->order = $datalist->getOrderParameter();
-			} else {
-				unset($session->order);
-			}
-
-			unset($params['order']);
-
-			$session->filters = $datalist->getFilters();
-		};
+		if (isset($params['page'])) {
+			/* @phpstan-ignore-next-line */
+			$section->page = $params['page'];
+		} else {
+			unset($section->page);
+		}
+		
+		unset($params['page']);
+		
+		if (isset($params['onpage'])) {
+			/* @phpstan-ignore-next-line */
+			$section->onpage = $params['onpage'];
+		} else {
+			unset($section->onpage);
+		}
+		
+		unset($params['onpage']);
+		
+		if (isset($params['order'])) {
+			/* @phpstan-ignore-next-line */
+			$section->order = $datalist->getOrderParameter();
+		} else {
+			unset($section->order);
+		}
+		
+		unset($params['order']);
+		
+		$section->filters = $datalist->getFilters();
 	}
 
 	/**
