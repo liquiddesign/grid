@@ -141,13 +141,13 @@ class Datalist extends Control
 
 		foreach ($source->getRepository()->getStructure()->getColumns(true) as $column) {
 			if ($column->hasMutations()) {
-				$this->allowedOrderColumn[$column->getPropertyName()] = $column->getName() . $source->getConnection()->getMutationSuffix();
+				$this->allowedOrderColumn[$column->getPropertyName()] = $column->getName() . $source->getPrefix(true) . $source->getConnection()->getMutationSuffix();
 
 				foreach (\array_keys($source->getConnection()->getAvailableMutations()) as $suffix) {
-					$this->allowedOrderColumn[$column->getPropertyName() . $suffix] = $column->getName() . $suffix;
+					$this->allowedOrderColumn[$column->getPropertyName() . $suffix] = $source->getPrefix(true) . $column->getName() . $suffix;
 				}
 			} else {
-				$this->allowedOrderColumn[$column->getPropertyName()] = $column->getName();
+				$this->allowedOrderColumn[$column->getPropertyName()] = $source->getPrefix(true) . $column->getName();
 			}
 		}
 	}
