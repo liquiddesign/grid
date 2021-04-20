@@ -58,7 +58,9 @@ class Datagrid extends Datalist
 	/**
 	 * @var callable|null
 	 */
-	protected $getIdCallback = null;
+	protected $idCallback = null;
+	
+	protected ?string $sourceIdName = null;
 	
 	/**
 	 * @var \Grid\Column[]
@@ -88,32 +90,43 @@ class Datagrid extends Datalist
 		}
 		
 		if ($source instanceof Collection) {
-			$this->getIdCallback = static function (Entity $object) {
+			$this->idCallback = static function (Entity $object) {
 				return $object->getPK();
 			};
+			$this->sourceIdName = $source->getRepository()->getStructure()->getPK()->getName();
 		}
 		
 		parent::__construct($source, $defaultOnPage, $defaultOrderExpression, $defaultOrderDir);
 	}
 	
-	public function setIdCallbacks(?callable $encodeCallback, ?callable $decodeCallback): void
+	public function setEncodeCallbacks(?callable $encodeCallback, ?callable $decodeCallback): void
 	{
 		$this->encodeIdCallback = $encodeCallback;
 		$this->decodeIdCallback = $decodeCallback;
 	}
 	
+	public function setSourceId(callable $idCallback, string $sourceIdName): void
+	{
+		$this->idCallback = $idCallback;
+		$this->sourceIdName = $sourceIdName;
+	}
+	
+	/**
+	 * @param callable $callable
+	 * @deprecated use setSourceId instead
+	 */
 	public function setGetIdCallback(callable $callable): void
 	{
-		$this->getIdCallback = $callable;
+		$this->idCallback = $callable;
 	}
 	
 	public function getSourceIdName(): string
 	{
-		if (!$this->source instanceof Collection) {
+		if (!$this->sourceIdName) {
 			throw new InvalidStateException('Cannot get source ID name');
 		}
 		
-		return $this->source->getRepository()->getStructure()->getPK()->getName();
+		return $this->sourceIdName;
 	}
 	
 	/**
@@ -277,12 +290,12 @@ class Datagrid extends Datalist
 		
 		$this->registerInput($name, $defaultValue, \call_user_func($callback, '') instanceof Checkbox);
 		
-		if (!$this->getIdCallback) {
+		if (!$this->idCallback) {
 			throw new \DomainException('ID callback is not set, call ->setGetIdCallback()');
 		}
 		
 		return $this->addColumn($th, function ($object, $datagrid) use ($name, $setValueExpression) {
-			$id = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, \call_user_func($this->getIdCallback, $object)) : \call_user_func($this->getIdCallback, $object);
+			$id = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, \call_user_func($this->idCallback, $object)) : \call_user_func($this->idCallback, $object);
 			
 			$input = $datagrid['form'][$name][$id];
 			
