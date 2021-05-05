@@ -380,8 +380,8 @@ class Datalist extends Control
 			\call_user_func_array($this->filterExpressions[$name], [$filteredSource, $value]);
 		}
 
-		// ORDER BY
-		if ($this->getOrder() !== null) {
+		// ORDER BY IF NOT SET IN COLLECTION
+		if ($this->getOrder() !== null && !($filteredSource->getModifiers()['ORDER BY'] && !$this->order)) {
 			$filteredSource->setOrderBy([]);
 
 			if (isset($this->orderExpressions[$this->getOrder()])) {
