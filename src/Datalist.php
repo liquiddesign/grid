@@ -10,6 +10,7 @@ use Nette\ComponentModel\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
+use Nette\InvalidArgumentException;
 use Nette\Utils\Paginator;
 use StORM\Collection;
 use StORM\ICollection;
@@ -576,7 +577,11 @@ class Datalist extends Control
 			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
 				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
 					if ($this->filterDefaultValue[$filter] !== $value) {
-						$component->setDefaultValue($value);
+						try{
+							$component->setDefaultValue($value);
+						}catch (InvalidArgumentException $e){
+							// values are out of allowed set catch
+						}
 					}
 				}
 			}

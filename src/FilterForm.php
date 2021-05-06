@@ -7,6 +7,7 @@ namespace Grid;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
+use Nette\InvalidArgumentException;
 
 /**
  * Class FilterForm
@@ -45,8 +46,12 @@ class FilterForm extends Form
 		$this->onRender[] = function (FilterForm $form): void {
 			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
 				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
-					/** @var \Nette\Forms\Controls\BaseControl $component */
-					$component->setDefaultValue($value);
+					try{
+						/** @var \Nette\Forms\Controls\BaseControl $component */
+						$component->setDefaultValue($value);
+					}catch (InvalidArgumentException $e){
+						// values are out of allowed set catch
+					}
 				}
 			}
 		};
