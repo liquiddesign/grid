@@ -125,7 +125,7 @@ class Datalist extends Control
 	{
 		$this->source = $source;
 		$this->itemCountCallback = function (ICollection $filteredSource) {
-			return $filteredSource->count();
+			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->count();
 		};
 
 		if ($defaultOnPage !== null) {
