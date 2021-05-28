@@ -124,8 +124,9 @@ class Datalist extends Control
 	public function __construct(ICollection $source, ?int $defaultOnPage = null, ?string $defaultOrderExpression = null, ?string $defaultOrderDir = null)
 	{
 		$this->source = $source;
+		
 		$this->itemCountCallback = function (ICollection $filteredSource) {
-			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->count();
+			$filteredSource->count();
 		};
 
 		if ($defaultOnPage !== null) {

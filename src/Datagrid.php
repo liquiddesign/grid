@@ -97,6 +97,11 @@ class Datagrid extends Datalist
 		}
 		
 		parent::__construct($source, $defaultOnPage, $defaultOrderExpression, $defaultOrderDir);
+		
+		// replace item count callback
+		$this->itemCountCallback = function (ICollection $filteredSource) {
+			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->count();
+		};
 	}
 	
 	public function setEncodeCallbacks(?callable $encodeCallback, ?callable $decodeCallback): void
