@@ -19,6 +19,8 @@ use StORM\ICollection;
  * @property \Nette\Bridges\ApplicationLatte\Template|\StdClass $template
  * @method onRenderRow(\Nette\Utils\Html $tr, $entity, int|string $id)
  * @method onRender(\Nette\Utils\Html $body, array|\Grid\Column[] $columns)
+ * @method onUpdateRow(mixed $id, array|mixed[] $values)
+ * @method onDeleteRow(object $object)
  * @method \Nette\Forms\Controls\TextInput addFilterText(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
  * @method \Nette\Forms\Controls\TextInput addFilterPassword(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
  * @method \Nette\Forms\Controls\TextArea addFilterTextArea(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
@@ -46,6 +48,16 @@ class Datagrid extends Datalist
 	public $onRenderRow;
 	
 	/**
+	 * @var callable[]&callable(\Nette\Application\UI\Form ): void[] ; Called before update Row
+	 */
+	public $onUpdateRow;
+	
+	/**
+	 * @var callable[]&callable(\Nette\Application\UI\Form ): void[] ; Called before delete Row
+	 */
+	public $onDeleteRow;
+	
+	/**
 	 * @var callable|null
 	 */
 	protected $encodeIdCallback = null;
@@ -71,6 +83,11 @@ class Datagrid extends Datalist
 	 * @var mixed[]
 	 */
 	protected array $inputs = [];
+	
+	/**
+	 * @var mixed[]
+	 */
+	protected array $inputsValues = [];
 	
 	/**
 	 * @var callable[]
@@ -307,6 +324,7 @@ class Datagrid extends Datalist
 			if (\is_string($setValueExpression)) {
 				$property = $setValueExpression ?: $name;
 				$input->setValue($object->$property);
+				$this->inputsValues[$id][$name] = $object->$property;
 			}
 			
 			if (\is_callable($setValueExpression)) {
