@@ -126,7 +126,7 @@ class Datalist extends Control
 		$this->source = $source;
 		
 		$this->itemCountCallback = function (ICollection $filteredSource) {
-			$filteredSource->count();
+			return $filteredSource->count();
 		};
 
 		if ($defaultOnPage !== null) {
