@@ -318,6 +318,15 @@ class Datalist extends Control
 				$this->statefulFilters[$name] = true;
 			}
 		}
+		
+		// filter button is pressed
+		if (isset($params['filter'])) {
+			foreach ($this->filterExpressions as $name => $value) {
+				if (!isset($params[$name]) || $params[$name] === $this->filterDefaultValue[$name]) {
+					unset($this->filters[$name], $this->statefulFilters[$name]);
+				}
+			}
+		}
 	}
 
 	public function saveState(array &$params): void
@@ -552,7 +561,9 @@ class Datalist extends Control
 	protected function makeFilterForm(Form $form): void
 	{
 		$form->setMethod('get');
-
+		$form->addHidden('filter', 1)->setOmitted(true);
+		
+		
 		$form->onAnchor[] = function (\Nette\Application\UI\Form $form): void {
 			$datalist = $form->lookup(Datalist::class)->getName();
 
