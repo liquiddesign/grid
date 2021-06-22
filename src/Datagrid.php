@@ -117,7 +117,7 @@ class Datagrid extends Datalist
 		
 		// replace item count callback
 		$this->itemCountCallback = function (ICollection $filteredSource) {
-			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->count();
+			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->setGroupBy([])->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->setGroupBy([])->count();
 		};
 	}
 	
