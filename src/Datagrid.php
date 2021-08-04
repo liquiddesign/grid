@@ -337,7 +337,7 @@ class Datagrid extends Datalist
 	
 	public function addColumnSelector(array $wrapperAttributes = []): Column
 	{
-		$selectorAll = $this->getForm()->addCheckbox('__selector_all')->setHtmlAttribute('onclick', "gridSelectAll(this.closest('table'));");
+		$selectorAll = $this->getForm()->addCheckbox('__selector_all')->setHtmlAttribute('onclick', "gridSelectAll(this, this.closest('table'));");
 		
 		$columnInput = $this->addColumnInput($selectorAll->getControl(), '__selector', function ($id) {
 			return (new Checkbox())->setHtmlAttribute('value', $id)->setHtmlAttribute('class', 'rowSelector');
