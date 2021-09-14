@@ -185,7 +185,7 @@ class Datalist extends Control
 		if ($this->order === null) {
 			$orderDirection = $this->defaultDirection;
 		} else {
-			[$name, $orderDirection] = \explode('-', $this->order);
+			@[$name, $orderDirection] = \explode('-', $this->order);
 			unset($name);
 		}
 
@@ -201,8 +201,8 @@ class Datalist extends Control
 		if ($this->order === null) {
 			return $this->defaultOrder;
 		}
-
-		[$name, $direction] = \explode('-', $this->order);
+		
+		@[$name, $direction] = \explode('-', $this->order);
 		unset($direction);
 
 		return $name;
