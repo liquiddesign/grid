@@ -119,7 +119,8 @@ class Datagrid extends Datalist
 		
 		// replace item count callback
 		$this->itemCountCallback = function (ICollection $filteredSource) {
-			return !$filteredSource->isLoaded() && $this->getSourceIdName() ? $filteredSource->setGroupBy([])->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->setGroupBy([])->count();
+			return !$filteredSource->isLoaded() && $this->getSourceIdName() ?
+				$filteredSource->setGroupBy([])->enum($filteredSource->getPrefix(true) . $this->getSourceIdName(), true) : $filteredSource->setGroupBy([])->count();
 		};
 	}
 	
@@ -221,6 +222,7 @@ class Datagrid extends Datalist
 					foreach ($args as $k => $v) {
 						if (\is_array($v)) {
 							$args[$k] = $item;
+
 							foreach ($v as $p) {
 								$args[$k] = $args[$k]->$p;
 							}
@@ -291,6 +293,7 @@ class Datagrid extends Datalist
 				
 				if ($this->source instanceof Collection) {
 					$column = $this->source->getRepository()->getStructure()->getColumn($name);
+
 					if ($column && $column->hasMutations()) {
 						$mutation = $this->source->getConnection()->getMutation();
 					}
@@ -299,7 +302,6 @@ class Datagrid extends Datalist
 				if ($isCheckbox) {
 					$values[$id][$name] = $mutation ? [$mutation => isset($httpData[$encodedId])] : isset($httpData[$encodedId]);
 				} elseif ($httpData[$encodedId] !== $defaultValue) {
-					
 					$values[$id][$name] = $mutation ? [$mutation => $httpData[$encodedId]] : $httpData[$encodedId];
 				}
 			}
@@ -399,6 +401,10 @@ class Datagrid extends Datalist
 		$this->inputs[$name] = [$defaultValue, $isCheckboxType];
 	}
 	
+	/**
+	 * @param string[] $expressions
+	 * @return mixed[]
+	 */
 	private function parseFilters(array &$expressions): array
 	{
 		$filters = [];
@@ -407,17 +413,18 @@ class Datagrid extends Datalist
 			$matches = [];
 			$params = "(?:\:(?:('[^']*'))?([\.0-9]+)?)?";
 			$filter = "(?:\|([a-zA-Z_\.0-9]+)$params$params)?";
-			\preg_match("/([a-zA-Z_\.0-9]+)$filter$filter/", $expression, $matches);
+			\preg_match("/([a-zA-Z_.0-9]+)$filter$filter/", $expression, $matches);
 			$expressions[$key] = $matches[1];
 			$i = 0;
 			$filters[$key] = [];
 			$currentFilter = null;
+
 			foreach (\array_slice($matches, 2) as $value) {
 				if ($i % 5 === 0) {
 					$currentFilter = $value;
 					$filters[$key][$currentFilter] = [];
 				} elseif ($value !== '') {
-					$filters[$key][$currentFilter][] = ($i % 5 % 2 === 0) ? (\is_numeric($value) ? \floatval($value) : \explode('.', $value)) : \trim($value, "'");
+					$filters[$key][$currentFilter][] = $i % 5 % 2 === 0 ? (\is_numeric($value) ? \floatval($value) : \explode('.', $value)) : \trim($value, "'");
 				}
 				
 				$i++;

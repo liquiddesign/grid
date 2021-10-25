@@ -1,4 +1,6 @@
 parameters:
+	universalObjectCratesClasses:
+		- Nette\Http\SessionSection
 	level: 5
 	paths:
 		- src

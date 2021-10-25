@@ -26,6 +26,7 @@ class FilterForm extends Form
 			$datalist = $form->lookup(Datalist::class)->getName();
 			
 			$submit = false;
+
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
@@ -44,14 +45,21 @@ class FilterForm extends Form
 		
 		/* @phpstan-ignore-next-line */
 		$this->onRender[] = function (FilterForm $form): void {
-			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
-				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
-					try{
-						/** @var \Nette\Forms\Controls\BaseControl $component */
-						$component->setDefaultValue($value);
-					}catch (InvalidArgumentException $e){
-						// values are out of allowed set catch
-					}
+			/** @var \Grid\Datalist $datalist */
+			$datalist = $form->lookup(Datalist::class);
+			
+			foreach ($datalist->getFilters() as $filter => $value) {
+				/** @var \Nette\Forms\Controls\BaseControl|null $component */
+				$component = $form->getComponent($filter);
+				
+				if (!isset($form[$filter]) || !$component) {
+					return;
+				}
+				
+				try {
+					$component->setDefaultValue($value);
+				} catch (InvalidArgumentException $e) {
+					// values are out of allowed set catch
 				}
 			}
 		};

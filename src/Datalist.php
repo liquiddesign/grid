@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Grid;
 
 use Nette\Application\UI\Control;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\BaseControl;
@@ -22,34 +21,22 @@ use StORM\ICollection;
  */
 class Datalist extends Control
 {
-	/**
-	 * @var callable[]&callable(\Grid\Form ): void[] ; Occurs before data is load
-	 */
-	public $onLoad;
-
-	/**
-	 * @var callable[]&callable(\Grid\Form ): void[] ; Occurs before state is loaded
-	 */
-	public $onLoadState;
-
-	/**
-	 * @var callable[]&callable(\Grid\Form ): void[] ; Occurs after state is save
-	 */
-	public $onSaveState;
-
-	/**
-	 * @persistent
-	 */
+	/** @var array<callable(\StORM\ICollection): void> Occurs before data is load */
+	public array $onLoad;
+	
+	/** @var array<callable(\Grid\Datalist, array): void> Occurs before state is loaded */
+	public array $onLoadState;
+	
+	/** @var array<callable(\Grid\Datalist, array): void> Occurs after state is save */
+	public array $onSaveState;
+	
+	/** @persistent */
 	public ?string $order = null;
-
-	/**
-	 * @persistent
-	 */
+	
+	/** @persistent */
 	public ?int $page = null;
 
-	/**
-	 * @persistent
-	 */
+	/** @persistent */
 	public ?int $onpage = null;
 
 	protected ?int $defaultOnPage = null;
@@ -163,7 +150,10 @@ class Datalist extends Control
 	{
 		return $this->defaultOnPage;
 	}
-
+	
+	/**
+	 * @return string[]
+	 */
 	public function getDefaultOrder(): array
 	{
 		return [$this->defaultOrder, $this->defaultDirection];
@@ -266,6 +256,7 @@ class Datalist extends Control
 	{
 		if ($filters === null) {
 			$this->filters = [];
+
 			return;
 		}
 		
@@ -320,11 +311,13 @@ class Datalist extends Control
 		}
 		
 		// filter button is pressed
-		if (isset($params['filter'])) {
-			foreach ($this->filterExpressions as $name => $value) {
-				if (!isset($params[$name]) || $params[$name] === $this->filterDefaultValue[$name]) {
-					unset($this->filters[$name], $this->statefulFilters[$name]);
-				}
+		if (!isset($params['filter'])) {
+			return;
+		}
+
+		foreach (\array_keys($this->filterExpressions) as $name) {
+			if (!isset($params[$name]) || $params[$name] === $this->filterDefaultValue[$name]) {
+				unset($this->filters[$name], $this->statefulFilters[$name]);
 			}
 		}
 	}
@@ -464,9 +457,8 @@ class Datalist extends Control
 		$this->nestingCallback = $callback;
 	}
 
-	public function getFilterForm()
+	public function getFilterForm(): IComponent
 	{
-		/* @phpstan-ignore-next-line */
 		return $this['filterForm'];
 	}
 	
@@ -490,15 +482,16 @@ class Datalist extends Control
 		
 		unset($params['order']);
 		
-		if (isset($section->filters)) {
-			$datalist->filters = $section->filters;
+		if (!isset($section->filters)) {
+			return;
 		}
+
+		$datalist->filters = $section->filters;
 	}
-	
+
 	public static function saveSession(Datalist $datalist, array $params, \Nette\Http\SessionSection $section): void
 	{
 		if (isset($params['page'])) {
-			/* @phpstan-ignore-next-line */
 			$section->page = $params['page'];
 		} else {
 			unset($section->page);
@@ -507,7 +500,6 @@ class Datalist extends Control
 		unset($params['page']);
 		
 		if (isset($params['onpage'])) {
-			/* @phpstan-ignore-next-line */
 			$section->onpage = $params['onpage'];
 		} else {
 			unset($section->onpage);
@@ -516,7 +508,6 @@ class Datalist extends Control
 		unset($params['onpage']);
 		
 		if (isset($params['order'])) {
-			/* @phpstan-ignore-next-line */
 			$section->order = $datalist->getOrderParameter();
 		} else {
 			unset($section->order);
@@ -548,30 +539,32 @@ class Datalist extends Control
 
 	protected function createComponentFilterForm(): Component
 	{
-		$form = new Form();
+		$form = new \Nette\Application\UI\Form();
 		$this->makeFilterForm($form);
-
-		$form->onSuccess[] = function (Form $form) {
+		
+		/* @phpstan-ignore-next-line */
+		$form->onSuccess[] = function (\Nette\Application\UI\Form $form): void {
 			$this->setPage(1);
 		};
 
 		return $form;
 	}
 
-	protected function makeFilterForm(Form $form): void
+	protected function makeFilterForm(\Nette\Application\UI\Form $form): void
 	{
 		$form->setMethod('get');
 		$form->addHidden('filter', 1)->setOmitted(true);
 		
 		
 		$form->onAnchor[] = function (\Nette\Application\UI\Form $form): void {
-			$datalist = $form->lookup(Datalist::class)->getName();
+			$datalistName = $form->lookup(Datalist::class)->getName();
 
 			$submit = false;
 
+			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
-				$form->getAction()->setParameter("$datalist-$name", null);
+				$form->getAction()->setParameter("$datalistName-$name", null);
 
 				if ($component instanceof Button) {
 					if (!$submit) {
@@ -579,22 +572,28 @@ class Datalist extends Control
 						$submit = true;
 					}
 				} else {
-					$component->setHtmlAttribute('name', "$datalist-$name");
+					$component->setHtmlAttribute('name', "$datalistName-$name");
 				}
 			}
 		};
 
 		/* @phpstan-ignore-next-line */
 		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
-			foreach ($form->lookup(Datalist::class)->getFilters() as $filter => $value) {
-				if (isset($form[$filter]) && $component = $form->getComponent($filter)) {
-					if ($this->filterDefaultValue[$filter] !== $value) {
-						try{
-							$component->setDefaultValue($value);
-						}catch (InvalidArgumentException $e){
-							// values are out of allowed set catch
-						}
-					}
+			/** @var \Grid\Datalist $datalist */
+			$datalist = $form->lookup(Datalist::class);
+			
+			foreach ($datalist->getFilters() as $filter => $value) {
+				/** @var \Nette\Forms\Controls\BaseControl|null $component */
+				$component = $form->getComponent($filter);
+				
+				if (!isset($form[$filter]) || !$component || $this->filterDefaultValue[$filter] === $value) {
+					continue;
+				}
+				
+				try {
+					$component->setDefaultValue($value);
+				} catch (InvalidArgumentException $e) {
+					// values are out of allowed set catch
 				}
 			}
 		};
