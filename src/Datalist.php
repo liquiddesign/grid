@@ -25,10 +25,10 @@ class Datalist extends Control
 	/** @var array<callable(\StORM\ICollection): void> Occurs before data is load */
 	public array $onLoad;
 	
-	/** @var array<callable(\Grid\Datalist, array): void> Occurs before state is loaded */
+	/** @var array<callable(static, array): void> Occurs before state is loaded */
 	public array $onLoadState;
 	
-	/** @var array<callable(\Grid\Datalist, array): void> Occurs after state is save */
+	/** @var array<callable(static, array): void> Occurs after state is save */
 	public array $onSaveState;
 	
 	/** @persistent */
