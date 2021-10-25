@@ -15,6 +15,7 @@ use StORM\Collection;
 use StORM\ICollection;
 
 /**
+ * @property array<callable(static): void> $onAnchor
  * @method onLoad(\StORM\ICollection $source)
  * @method onSaveState(\Grid\Datalist $param, array $params)
  * @method onLoadState(\Grid\Datalist $param, array $params)
