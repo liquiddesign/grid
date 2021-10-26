@@ -23,13 +23,13 @@ use StORM\ICollection;
 class Datalist extends Control
 {
 	/** @var array<callable(\StORM\ICollection): void> Occurs before data is load */
-	public array $onLoad;
+	public array $onLoad = [];
 	
 	/** @var array<callable(static, array): void> Occurs before state is loaded */
-	public array $onLoadState;
+	public array $onLoadState = [];
 	
 	/** @var array<callable(static, array): void> Occurs after state is save */
-	public array $onSaveState;
+	public array $onSaveState = [];
 	
 	/** @persistent */
 	public ?string $order = null;
