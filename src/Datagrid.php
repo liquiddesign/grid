@@ -100,7 +100,7 @@ class Datagrid extends Datalist
 	{
 		if ($encodeId) {
 			$this->encodeIdCallback = static function ($id) {
-				return (string) \bin2hex((string) $id);
+				return \bin2hex((string) $id);
 			};
 			
 			$this->decodeIdCallback = static function ($id) {
@@ -229,7 +229,7 @@ class Datagrid extends Datalist
 						}
 					}
 					
-					$previous = $grid->template->getLatte()->invokeFilter($f, \array_merge([$previous], $args));
+					$previous = $grid->template->getLatte()->invokeFilter((string) $f, \array_merge([$previous], $args));
 				}
 				
 				$vars[] = $previous;
