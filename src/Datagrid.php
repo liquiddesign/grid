@@ -40,22 +40,22 @@ use StORM\ICollection;
 class Datagrid extends Datalist
 {
 	/**
-	 * @var array<callable(static, array): void> Called after render
+	 * @var array<callable(\Nette\Utils\Html, array): void> Called after render
 	 */
 	public array $onRender = [];
 	
 	/**
-	 * @var array<callable(static, array): void> Called after render Row
+	 * @var array<callable(\Nette\Utils\Html, array): void> Called after render Row
 	 */
 	public array $onRenderRow = [];
 	
 	/**
-	 * @var array<callable(static, array): void> Called before update Row
+	 * @var array<callable(mixed, array): void> Called before update Row
 	 */
 	public array $onUpdateRow = [];
 	
 	/**
-	 * @var array<callable(static, array): void> Called before delete Row
+	 * @var array<callable(object): void> Called before delete Row
 	 */
 	public array $onDeleteRow = [];
 	
