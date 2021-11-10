@@ -585,7 +585,7 @@ class Datalist extends Control
 			
 			foreach ($datalist->getFilters() as $filter => $value) {
 				/** @var \Nette\Forms\Controls\BaseControl|null $component */
-				$component = $form->getComponent($filter);
+				$component = $form->getComponent($filter, false);
 				
 				if (!isset($form[$filter]) || !$component || $this->filterDefaultValue[$filter] === $value) {
 					continue;
