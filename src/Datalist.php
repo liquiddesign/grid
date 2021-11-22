@@ -22,22 +22,34 @@ use StORM\ICollection;
  */
 class Datalist extends Control
 {
-	/** @var array<callable(\StORM\ICollection): void> Occurs before data is load */
+	/**
+	 * @var array<callable(\StORM\ICollection): void> Occurs before data is load
+	 */
 	public array $onLoad = [];
 	
-	/** @var array<callable(static, array): void> Occurs before state is loaded */
+	/**
+	 * @var array<callable(static, array): void> Occurs before state is loaded
+	 */
 	public array $onLoadState = [];
 	
-	/** @var array<callable(static, array): void> Occurs after state is save */
+	/**
+	 * @var array<callable(static, array): void> Occurs after state is save
+	 */
 	public array $onSaveState = [];
 	
-	/** @persistent */
+	/**
+	 * @persistent
+	 */
 	public ?string $order = null;
 	
-	/** @persistent */
+	/**
+	 * @persistent
+	 */
 	public ?int $page = null;
 
-	/** @persistent */
+	/**
+	 * @persistent
+	 */
 	public ?int $onpage = null;
 
 	protected ?int $defaultOnPage = null;

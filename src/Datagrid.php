@@ -34,10 +34,9 @@ use StORM\ICollection;
  * @method \Nette\Forms\Controls\SelectBox addFilterSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, int $size = null)
  * @method \Nette\Forms\Controls\SelectBox addFilterDataSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, int $size = null)
  * @method \Nette\Forms\Controls\MultiSelectBox addFilterMultiSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, int $size = null)
- * @method \Nette\Forms\Controls\MultiSelectBox addFilterDataMultiSelect(callable $filterExpression, ?string $defaultValue, string $name, $label = null, array $items = null, ?array $configuration = [])
+ * @method \Nette\Forms\Controls\MultiSelectBox addFilterDataMultiSelect(callable $filterExpression,?string $defaultValue, string $name, $label = null, array $items = null, ?array $configuration = [])
  * @method \Nette\Forms\Controls\UploadControl addFilterImage(callable $filterExpression, ?string $defaultValue, string $name, string $src = null, string $alt = null)
  * @method \Nette\Forms\Controls\TextInput addFilterDatetime(callable $filterExpression, string $name, ?string $label = null, ?array $configuration = [])
- *
  */
 class Datagrid extends Datalist
 {
