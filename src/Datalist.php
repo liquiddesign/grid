@@ -177,7 +177,10 @@ class Datalist extends Control
 		$this->defaultOrder = $name;
 		$this->defaultDirection = $direction;
 	}
-
+	
+	/**
+	 * @param string[] $orderBy
+	 */
 	public function setSecondaryOrder(array $orderBy): void
 	{
 		$this->secondaryOrder = $orderBy;
