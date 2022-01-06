@@ -216,7 +216,7 @@ class Datagrid extends Datalist
 						break;
 					}
 					
-					$previous = \is_callable([$previous, $property]) ? \call_user_func([$previous, $property]) : $previous->$property;
+					$previous = \method_exists($previous, $property) ? \call_user_func([$previous, $property]) : $previous->$property;
 				}
 				
 				foreach ($filters[$key] as $f => $args) {
