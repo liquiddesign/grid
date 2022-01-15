@@ -10,6 +10,7 @@ use Nette\ComponentModel\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
+use Nette\Forms\Form;
 use Nette\InvalidArgumentException;
 use Nette\Utils\Paginator;
 use StORM\Collection;
@@ -509,7 +510,7 @@ class Datalist extends Control
 						$submit = true;
 					}
 				} else {
-					if ($component->getParent() instanceof \Nette\Forms\Container) {
+					if (!$component->getParent() instanceof Form) {
 						$parentName = $component->getParent()->getName();
 						$component->setHtmlAttribute('name', "$datalistName-$parentName" . "[$name]");
 					} else {
