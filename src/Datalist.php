@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grid;
 
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Presenter;
 use Nette\ComponentModel\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\BaseControl;
@@ -478,6 +479,72 @@ class Datalist extends Control
 		return $this['filterForm'];
 	}
 	
+	public function makeFilterForm(\Nette\Application\UI\Form $form, bool $filterInput = true, bool $removeSignalKey = false): void
+	{
+		$form->setMethod('get');
+		
+		if ($filterInput) {
+			$form->addHidden('filter', 1)->setOmitted(true);
+		}
+		
+		if ($removeSignalKey) {
+			$form->onRender[] = function ($form): void {
+				$form->removeComponent($form[Presenter::SIGNAL_KEY]);
+			};
+		}
+		
+		$form->onAnchor[] = function (\Nette\Application\UI\Form $form): void {
+			$datalistName = $form->lookup(Datalist::class)->getName();
+			
+			$submit = false;
+			
+			/** @var \Nette\Forms\Controls\BaseControl $component */
+			foreach ($form->getComponents(true, BaseControl::class) as $component) {
+				$name = $component->getName();
+				$form->getAction()->setParameter("$datalistName-$name", null);
+				
+				if ($component instanceof Button) {
+					if (!$submit) {
+						$component->setHtmlAttribute('name', '');
+						$submit = true;
+					}
+				} else {
+					if ($component->getParent() instanceof \Nette\Forms\Container) {
+						$parentName = $component->getParent()->getName();
+						$component->setHtmlAttribute('name', "$datalistName-$parentName" . "[$name]");
+					} else {
+						$component->setHtmlAttribute('name', "$datalistName-$name");
+					}
+				}
+			}
+		};
+		
+		/* @phpstan-ignore-next-line */
+		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
+			/** @var \Grid\Datalist $datalist */
+			$datalist = $form->lookup(Datalist::class);
+			
+			foreach ($datalist->getFilters() as $filter => $value) {
+				/** @var \Nette\Forms\Controls\BaseControl|null $component */
+				$component = $form->getComponent($filter, false);
+				
+				if (!isset($form[$filter]) || !$component || $this->filterDefaultValue[$filter] === $value) {
+					continue;
+				}
+				
+				if (!($component instanceof BaseControl)) {
+					continue;
+				}
+
+				try {
+					$component->setDefaultValue($value);
+				} catch (InvalidArgumentException $e) {
+					// values are out of allowed set catch
+				}
+			}
+		};
+	}
+
 	public static function loadSession(Datalist $datalist, array $params, \Nette\Http\SessionSection $section): void
 	{
 		if (!isset($params['page']) && isset($section->page)) {
@@ -533,7 +600,7 @@ class Datalist extends Control
 		
 		$section->filters = $datalist->getFilters();
 	}
-
+	
 	/**
 	 * @param \StORM\ICollection $source
 	 * @param \StORM\Entity|object|null $parent
@@ -565,56 +632,7 @@ class Datalist extends Control
 
 		return $form;
 	}
-
-	protected function makeFilterForm(\Nette\Application\UI\Form $form): void
-	{
-		$form->setMethod('get');
-		$form->addHidden('filter', 1)->setOmitted(true);
-		
-		
-		$form->onAnchor[] = function (\Nette\Application\UI\Form $form): void {
-			$datalistName = $form->lookup(Datalist::class)->getName();
-
-			$submit = false;
-
-			/** @var \Nette\Forms\Controls\BaseControl $component */
-			foreach ($form->getComponents(true, BaseControl::class) as $component) {
-				$name = $component->getName();
-				$form->getAction()->setParameter("$datalistName-$name", null);
-
-				if ($component instanceof Button) {
-					if (!$submit) {
-						$component->setHtmlAttribute('name', '');
-						$submit = true;
-					}
-				} else {
-					$component->setHtmlAttribute('name', "$datalistName-$name");
-				}
-			}
-		};
-
-		/* @phpstan-ignore-next-line */
-		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
-			/** @var \Grid\Datalist $datalist */
-			$datalist = $form->lookup(Datalist::class);
-			
-			foreach ($datalist->getFilters() as $filter => $value) {
-				/** @var \Nette\Forms\Controls\BaseControl|null $component */
-				$component = $form->getComponent($filter, false);
-				
-				if (!isset($form[$filter]) || !$component || $this->filterDefaultValue[$filter] === $value) {
-					continue;
-				}
-				
-				try {
-					$component->setDefaultValue($value);
-				} catch (InvalidArgumentException $e) {
-					// values are out of allowed set catch
-				}
-			}
-		};
-	}
-
+	
 	protected function createComponentPaging(): ?IComponent
 	{
 		return new Paging();
