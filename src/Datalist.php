@@ -328,13 +328,8 @@ class Datalist extends Control
 			}
 		}
 		
-		// filter button is pressed
-		if (!isset($params['filter'])) {
-			return;
-		}
-
 		foreach (\array_keys($this->filterExpressions) as $name) {
-			if (!isset($params[$name]) || $params[$name] === $this->filterDefaultValue[$name]) {
+			if ((!isset($params[$name]) || $params[$name] === $this->filterDefaultValue[$name]) && isset($this->statefulFilters[$name])) {
 				unset($this->filters[$name], $this->statefulFilters[$name]);
 			}
 		}
