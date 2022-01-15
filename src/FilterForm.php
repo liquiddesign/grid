@@ -21,7 +21,6 @@ class FilterForm extends Form
 		
 		$this->setMethod('get');
 		
-		/* @phpstan-ignore-next-line */
 		$this->onAnchor[] = function (FilterForm $form): void {
 			$datalist = $form->lookup(Datalist::class)->getName();
 			
@@ -43,7 +42,6 @@ class FilterForm extends Form
 			}
 		};
 		
-		/* @phpstan-ignore-next-line */
 		$this->onRender[] = function (FilterForm $form): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);

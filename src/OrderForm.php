@@ -16,7 +16,6 @@ class OrderForm extends Form
 		/** @var \Nette\Forms\Controls\SelectBox $select */
 		$select = $this->addSelect('order', null, $options);
 		
-		/* @phpstan-ignore-next-line */
 		$this->onAnchor[] = function (OrderForm $form) use ($select): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
@@ -26,7 +25,6 @@ class OrderForm extends Form
 			$select->setDefaultValue($datalist->getOrderParameter());
 		};
 		
-		/* @phpstan-ignore-next-line */
 		$this->onValidate[] = function (OrderForm $form) use ($select): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);

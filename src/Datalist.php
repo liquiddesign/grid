@@ -518,8 +518,7 @@ class Datalist extends Control
 				}
 			}
 		};
-		
-		/* @phpstan-ignore-next-line */
+
 		$form->onRender[] = function (\Nette\Application\UI\Form $form): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
@@ -625,7 +624,6 @@ class Datalist extends Control
 		$form = new \Nette\Application\UI\Form();
 		$this->makeFilterForm($form);
 		
-		/* @phpstan-ignore-next-line */
 		$form->onSuccess[] = function (\Nette\Application\UI\Form $form): void {
 			$this->setPage(1);
 		};

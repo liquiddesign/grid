@@ -16,7 +16,6 @@ class OnPageForm extends Form
 		/** @var \Nette\Forms\Controls\SelectBox $select */
 		$select = $this->addSelect('onpage', null, $options);
 		
-		/* @phpstan-ignore-next-line */
 		$this->onAnchor[] = function (OnPageForm $form) use ($select): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
@@ -26,7 +25,6 @@ class OnPageForm extends Form
 			$select->setDefaultValue($datalist->getOnPage());
 		};
 		
-		/* @phpstan-ignore-next-line */
 		$this->onValidate[] = function (OnPageForm $form) use ($select): void {
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
