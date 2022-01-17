@@ -76,7 +76,7 @@ class Datalist extends Control
 	protected array $orderExpressions = [];
 
 	/**
-	 * @var string[]|callable[]
+	 * @var callable[]
 	 */
 	protected array $filterExpressions = [];
 
@@ -91,7 +91,7 @@ class Datalist extends Control
 	protected array $allowedRepositoryFilters = [];
 
 	/**
-	 * @var callable[]
+	 * @var int[]|float[]|string[]|bool[]
 	 */
 	protected array $filters = [];
 
