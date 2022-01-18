@@ -91,7 +91,7 @@ class Datalist extends Control
 	protected array $allowedRepositoryFilters = [];
 
 	/**
-	 * @var mixed[]
+	 * @var mixed[]|mixed[][]|mixed[][][]
 	 */
 	protected array $filters = [];
 
@@ -288,7 +288,7 @@ class Datalist extends Control
 	}
 
 	/**
-	 * @return callable[]
+	 * @return mixed[]|mixed[][]|mixed[][][]
 	 */
 	public function getFilters(): array
 	{
