@@ -13,6 +13,7 @@ use Nette\Forms\Controls\Button;
 use Nette\Forms\Form;
 use Nette\InvalidArgumentException;
 use Nette\Utils\Paginator;
+use Nette\Utils\Strings;
 use StORM\Collection;
 use StORM\ICollection;
 
@@ -196,12 +197,12 @@ class Datalist extends Control
 			@[$name, $orderDirection] = \explode('-', $this->order);
 			unset($name);
 		}
-
+		
 		if ($reverse) {
-			return $orderDirection === 'ASC' ? 'DESC' : 'ASC';
+			return Strings::upper($orderDirection) === 'ASC' ? 'DESC' : 'ASC';
 		}
-
-		return $orderDirection === 'ASC' ? 'ASC' : 'DESC';
+		
+		return Strings::upper($orderDirection) === 'ASC' ? 'ASC' : 'DESC';
 	}
 
 	public function getOrder(): ?string
