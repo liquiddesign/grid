@@ -410,7 +410,11 @@ class Datalist extends Control
 				$filteredSource->orderBy([$this->allowedOrderColumn[$this->getOrder()] => $this->getDirection()]);
 			}
 
-			$filteredSource->orderBy($this->secondaryOrder);
+			$secondaryOrder = $this->secondaryOrder;
+			
+			unset($secondaryOrder[$this->getOrder()]);
+			
+			$filteredSource->orderBy($secondaryOrder);
 		}
 
 		if ($newInstance) {
