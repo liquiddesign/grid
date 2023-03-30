@@ -323,6 +323,29 @@ class Datalist extends Control
 		parent::loadState($params);
 
 		foreach ($params as $name => $value) {
+			// Fix for multiselects, works only if hidden field is inserted after multiselect with same name and value __none__
+			if (\is_array($value)) {
+				$none = true;
+
+				foreach ($value as $key => $val) {
+					if ($val !== '__none__') {
+						$none = false;
+					}
+
+					if ($val !== '__none__') {
+						continue;
+					}
+
+					unset($value[$key]);
+				}
+
+				if ($none) {
+					unset($params[$name]);
+				} else {
+					$value = \array_values($value);
+				}
+			}
+
 			if (isset($this->filterExpressions[$name])) {
 				$this->filters[$name] = $value;
 				$this->statefulFilters[$name] = true;
