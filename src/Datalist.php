@@ -346,10 +346,12 @@ class Datalist extends Control
 				}
 			}
 
-			if (isset($this->filterExpressions[$name])) {
-				$this->filters[$name] = $value;
-				$this->statefulFilters[$name] = true;
+			if (!isset($this->filterExpressions[$name])) {
+				continue;
 			}
+
+			$this->filters[$name] = $value;
+			$this->statefulFilters[$name] = true;
 		}
 		
 		foreach (\array_keys($this->filterExpressions) as $name) {
