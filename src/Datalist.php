@@ -229,7 +229,7 @@ class Datalist extends Control
 
 	public function setAllowedOrderColumns(array $columns, bool $merge = false): void
 	{
-		$this->allowedOrderColumn = $merge ? $this->allowedOrderColumn + $columns : $columns;
+		$this->allowedOrderColumn = $merge ? \array_merge($this->allowedOrderColumn, $columns) : $columns;
 	}
 
 	public function addOrderExpression(string $name, callable $callback): void
