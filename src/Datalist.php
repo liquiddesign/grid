@@ -268,7 +268,7 @@ class Datalist extends Control
 
 	public function setAllowedRepositoryFilters(array $list, bool $merge = false): void
 	{
-		$this->allowedRepositoryFilters = $merge ? $this->allowedRepositoryFilters + $list : $list;
+		$this->allowedRepositoryFilters = $merge ? \array_merge($this->allowedRepositoryFilters, $list) : $list;
 	}
 
 	public function setFilters(?array $filters): void
