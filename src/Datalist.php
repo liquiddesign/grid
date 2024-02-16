@@ -12,6 +12,7 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
 use Nette\Forms\Form;
 use Nette\InvalidArgumentException;
+use Nette\Utils\Arrays;
 use Nette\Utils\Paginator;
 use Nette\Utils\Strings;
 use StORM\Collection;
@@ -62,37 +63,37 @@ class Datalist extends Control
 	protected string $defaultDirection = 'ASC';
 
 	/**
-	 * @var string[]
+	 * @var array<string>
 	 */
 	protected array $secondaryOrder = [];
 
 	/**
-	 * @var string[]
+	 * @var array<string>
 	 */
 	protected array $allowedOrderColumn = [];
 
 	/**
-	 * @var string[]
+	 * @var array<string>
 	 */
 	protected array $orderExpressions = [];
 
 	/**
-	 * @var callable[]
+	 * @var array<callable>
 	 */
 	protected array $filterExpressions = [];
 
 	/**
-	 * @var mixed[]|null[]
+	 * @var array<mixed>|array<null>
 	 */
 	protected array $filterDefaultValue = [];
 
 	/**
-	 * @var string[]
+	 * @var array<string>
 	 */
 	protected array $allowedRepositoryFilters = [];
 
 	/**
-	 * @var mixed[]|mixed[][]|mixed[][][]
+	 * @var array<mixed>|array<array<mixed>>|array<array<array<mixed>>>
 	 */
 	protected array $filters = [];
 
@@ -105,7 +106,7 @@ class Datalist extends Control
 	protected ?ICollection $filteredSource = null;
 
 	/**
-	 * @var \StORM\Entity[]|object[]|null
+	 * @var array<\StORM\Entity>|array<object>|null
 	 */
 	protected ?array $itemsOnPage = null;
 
@@ -120,7 +121,7 @@ class Datalist extends Control
 	protected $itemCountCallback = null;
 
 	/**
-	 * @var bool[]
+	 * @var array<bool>
 	 */
 	private array $statefulFilters = [];
 
@@ -168,7 +169,7 @@ class Datalist extends Control
 	}
 	
 	/**
-	 * @return string[]
+	 * @return array<string>
 	 */
 	public function getDefaultOrder(): array
 	{
@@ -182,7 +183,7 @@ class Datalist extends Control
 	}
 	
 	/**
-	 * @param string[] $orderBy
+	 * @param array<string> $orderBy
 	 */
 	public function setSecondaryOrder(array $orderBy): void
 	{
@@ -194,6 +195,7 @@ class Datalist extends Control
 		if ($this->order === null) {
 			$orderDirection = $this->defaultDirection;
 		} else {
+			// phpcs:ignore
 			@[$name, $orderDirection] = \explode('-', $this->order);
 			unset($name);
 		}
@@ -210,7 +212,8 @@ class Datalist extends Control
 		if ($this->order === null) {
 			return $this->defaultOrder;
 		}
-		
+
+		// phpcs:ignore
 		@[$name, $direction] = \explode('-', $this->order);
 		unset($direction);
 
@@ -238,7 +241,7 @@ class Datalist extends Control
 	}
 
 	/**
-	 * @param string[] $listToRemove
+	 * @param array<string> $listToRemove
 	 */
 	public function removeOrderExpressions(array $listToRemove): void
 	{
@@ -289,7 +292,7 @@ class Datalist extends Control
 	}
 
 	/**
-	 * @return mixed[]|mixed[][]|mixed[][][]
+	 * @return array<mixed>|array<array<mixed>>|array<array<array<mixed>>>
 	 */
 	public function getFilters(): array
 	{
@@ -368,7 +371,7 @@ class Datalist extends Control
 		$this->onSaveState($this, $params);
 
 		if ($this->autoCanonicalize) {
-			if (isset($params['onpage']) && $this->defaultOnPage !== null && $this->defaultOnPage === (int)$params['onpage']) {
+			if (isset($params['onpage']) && $this->defaultOnPage !== null && $this->defaultOnPage === (int) $params['onpage']) {
 				$params['onpage'] = null;
 			}
 
@@ -376,7 +379,7 @@ class Datalist extends Control
 				$params['order'] = null;
 			}
 
-			if (isset($params['page']) && (int)$params['page'] === 1) {
+			if (isset($params['page']) && (int) $params['page'] === 1) {
 				$params['page'] = null;
 			}
 		}
@@ -412,7 +415,7 @@ class Datalist extends Control
 
 		// FILTER
 		foreach ($this->filters as $name => $value) {
-			if ($filteredSource instanceof Collection && !isset($this->filterExpressions[$name]) && \in_array($name, $this->allowedRepositoryFilters)) {
+			if ($filteredSource instanceof Collection && !isset($this->filterExpressions[$name]) && Arrays::contains($this->allowedRepositoryFilters, $name)) {
 				$filteredSource->filter([$name => $value]);
 			}
 
@@ -474,7 +477,7 @@ class Datalist extends Control
 	}
 
 	/**
-	 * @return \StORM\Entity[]|object[]
+	 * @return array<\StORM\Entity>|array<object>
 	 */
 	public function getItemsOnPage(): array
 	{
@@ -629,7 +632,7 @@ class Datalist extends Control
 	/**
 	 * @param \StORM\ICollection $source
 	 * @param \StORM\Entity|object|null $parent
-	 * @return \StORM\Entity[]|object[]
+	 * @return array<\StORM\Entity>|array<object>
 	 */
 	protected function getNestedSource(ICollection $source, ?object $parent): array
 	{
@@ -664,16 +667,15 @@ class Datalist extends Control
 
 	/**
 	 * @param string $name
-	 * @param mixed[] $args
-	 * @return mixed
+	 * @param array<mixed> $args
 	 */
-	public function __call(string $name, array $args)
+	public function __call(string $name, array $args): mixed
 	{
 		$prefix = 'addFilter';
-		$controlName = (string)\substr($name, \strlen($prefix));
+		$controlName = (string) Strings::substring($name, Strings::length($prefix));
 		$form = $this->getFilterForm();
 
-		if ($prefix === \substr($name, 0, \strlen($prefix)) && \method_exists($form, 'add' . $controlName)) {
+		if ($prefix === Strings::substring($name, 0, Strings::length($prefix)) && \method_exists($form, 'add' . $controlName)) {
 			$method = 'add' . $controlName;
 
 			$this->addFilterExpression($args[2], \array_shift($args), \array_shift($args));

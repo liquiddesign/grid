@@ -17,12 +17,12 @@ class Column
 	use SmartObject;
 	
 	/**
-	 * @var callable[]
+	 * @var array<callable>
 	 */
 	public $onRender;
 	
 	/**
-	 * @var callable[]
+	 * @var array<callable>
 	 */
 	public $onRenderCell;
 	
@@ -50,7 +50,7 @@ class Column
 	private Datagrid $datagrid;
 	
 	/**
-	 * @var string[]
+	 * @var array<string>
 	 */
 	private array $wrapperAttributes;
 	
@@ -61,7 +61,7 @@ class Column
 	 * @param \Nette\Utils\Html|string $td
 	 * @param callable $dataCallback
 	 * @param string|null $orderName
-	 * @param string[] $wrapperAttributes
+	 * @param array<string> $wrapperAttributes
 	 */
 	public function __construct(Datagrid $datagrid, $th, $td, callable $dataCallback, ?string $orderName = null, array $wrapperAttributes = [])
 	{

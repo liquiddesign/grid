@@ -10,6 +10,7 @@ use Nette\ComponentModel\IComponent;
 use Nette\Forms\Controls\Checkbox;
 use Nette\InvalidStateException;
 use Nette\Utils\Html;
+use Nette\Utils\Strings;
 use StORM\Collection;
 use StORM\Entity;
 use StORM\ICollection;
@@ -18,8 +19,8 @@ use StORM\ICollection;
  * Class Datagrid
  * @property \Nette\Bridges\ApplicationLatte\Template|\StdClass $template
  * @method onRenderRow(\Nette\Utils\Html $tr, $entity, int|string $id)
- * @method onRender(\Nette\Utils\Html $body, array|\Grid\Column[] $columns)
- * @method onUpdateRow(mixed $id, array|mixed[] $values)
+ * @method onRender(\Nette\Utils\Html $body, array<\Grid\Column> $columns)
+ * @method onUpdateRow(mixed $id, array<mixed> $values)
  * @method onDeleteRow(object $object)
  * @method \Nette\Forms\Controls\TextInput addFilterText(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
  * @method \Nette\Forms\Controls\TextInput addFilterPassword(callable $filterExpression, ?string $defaultValue, string $name, $label = null, int $cols = null, int $maxLength = null)
@@ -80,22 +81,22 @@ class Datagrid extends Datalist
 	protected ?string $sourceIdName = null;
 	
 	/**
-	 * @var \Grid\Column[]
+	 * @var array<\Grid\Column>
 	 */
 	protected array $columns = [];
 	
 	/**
-	 * @var mixed[]
+	 * @var array<mixed>
 	 */
 	protected array $inputs = [];
 	
 	/**
-	 * @var mixed[]
+	 * @var array<mixed>
 	 */
 	protected array $inputsValues = [];
 	
 	/**
-	 * @var callable[]
+	 * @var array<callable>
 	 */
 	protected array $actions = [];
 	
@@ -158,7 +159,7 @@ class Datagrid extends Datalist
 	}
 	
 	/**
-	 * @return string[]
+	 * @return array<string>
 	 */
 	public function getSelectedIds(): array
 	{
@@ -184,7 +185,7 @@ class Datagrid extends Datalist
 	 * @param callable $dataCallback
 	 * @param string|\Nette\Utils\Html $td
 	 * @param string|null $orderExpression
-	 * @param string[] $wrapperAttributes
+	 * @param array<string> $wrapperAttributes
 	 */
 	public function addColumn($th, callable $dataCallback, $td = '%s', ?string $orderExpression = null, array $wrapperAttributes = []): Column
 	{
@@ -275,8 +276,8 @@ class Datagrid extends Datalist
 	}
 	
 	/**
-	 * @param string[]|null $inputNames
-	 * @return mixed[][]
+	 * @param array<string>|null $inputNames
+	 * @return array<array<mixed>>
 	 */
 	public function getInputData(?array $inputNames = null): array
 	{
@@ -405,8 +406,8 @@ class Datagrid extends Datalist
 	}
 	
 	/**
-	 * @param string[] $expressions
-	 * @return mixed[]
+	 * @param array<string> $expressions
+	 * @return array<mixed>
 	 */
 	private function parseFilters(array &$expressions): array
 	{
@@ -427,7 +428,7 @@ class Datagrid extends Datalist
 					$currentFilter = $value;
 					$filters[$key][$currentFilter] = [];
 				} elseif ($value !== '') {
-					$filters[$key][$currentFilter][] = $i % 5 % 2 === 0 ? (\is_numeric($value) ? \floatval($value) : \explode('.', $value)) : \trim($value, "'");
+					$filters[$key][$currentFilter][] = $i % 5 % 2 === 0 ? (\is_numeric($value) ? \floatval($value) : \explode('.', $value)) : Strings::trim($value, "'");
 				}
 				
 				$i++;

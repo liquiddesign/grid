@@ -6,6 +6,7 @@ namespace Grid;
 
 use Nette\Application\UI\Control;
 use Nette\InvalidStateException;
+use Nette\Utils\Strings;
 
 /**
  * Class Paging
@@ -31,7 +32,7 @@ class Paging extends Control
 		$this->template->paginator = $this->getDatalist()->getPaginator(true);
 		
 		$parentFilename = (new \ReflectionClass($this->getDatalist()))->getFileName();
-		$filePath = \substr($parentFilename, 0, \strrpos($parentFilename, '.')) . '-paging.latte';
+		$filePath = Strings::substring($parentFilename, 0, \strrpos($parentFilename, '.')) . '-paging.latte';
 		
 		
 		$this->template->render($this->template->getFile() ?? (\is_file($filePath) ? $filePath : __DIR__ . '/paging.latte'));
