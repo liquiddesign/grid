@@ -1,0 +1,15 @@
+<!--- BEGIN HEADER -->
+# Changelog
+
+All notable changes to this project will be documented in this file.
+<!--- END HEADER -->
+
+## [1.0.0](https://github.com/liquiddesign/grid/compare/v0.1.10...v1.0.0) (2024-03-07)
+
+### Builds
+
+* Require least PHP 8.0, CodeStyle 3 and check commits ([0bf4ed](https://github.com/liquiddesign/grid/commit/0bf4ed071c93c2b6005a732ae3592d33615f11f2))
+
+
+---
+

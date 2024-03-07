@@ -1,40 +1,48 @@
 {
-	"name": "liquiddesign/grid",
-	"description": "⊞ Komponenty datalistu, datagridu, stránkování, řazení a filtry",
-	"license": "MIT",
-	"autoload": {
-		"psr-4": {"Grid\\": "src/"}
-	},
-	"require" :
-	{
-		"php":">=8.0",
-		"nette/application":"~3.0",
-		"nette/forms":"~3.0",
-		"nette/utils":"~3.0",
-		"nette/di":"~3.0",
-		"latte/latte":"~2.0 || ~3.0",
-		"nette/component-model":"~3.0",
-		"tracy/tracy":"*",
-		"liquiddesign/storm": "~1.0",
-		"ext-pdo": "*"
-	},
-	"require-dev": 
-	{
-		"nette/tester":"*",
-		"composer/composer": "*",
-		"liquiddesign/codestyle": "~3.0",
-		"phpstan/phpstan": "*"
-	},
-	"scripts": {
-		"phpstan": "phpstan analyse --memory-limit 1G -c phpstan.neon",
-		"phpcs": "phpcs --standard=ruleset.xml --ignore=assets src",
-		"phpcsfix": "phpcbf --standard=ruleset.xml --ignore=assets src",
-		"tester": "tester tests/Tests/*.phpt  -c tests/php.ini --setup tests/setup.php",
-		"check-commit": "@php ./vendor/liquiddesign/codestyle/src/scripts/check-last-commit.php"
-	},
-	"config": {
-		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
-		}
-	}
+    "name": "liquiddesign/grid",
+    "description": "⊞ Komponenty datalistu, datagridu, stránkování, řazení a filtry",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Grid\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "nette/application": "~3.0",
+        "nette/forms": "~3.0",
+        "nette/utils": "~4.0",
+        "nette/di": "~3.0",
+        "latte/latte": "~2.0 || ~3.0",
+        "nette/component-model": "~3.0",
+        "tracy/tracy": "*",
+        "liquiddesign/storm": "~2.0",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "nette/tester": "*",
+        "composer/composer": "*",
+        "liquiddesign/codestyle": "~3.0",
+        "phpstan/phpstan": "*"
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse --memory-limit 1G -c phpstan.neon",
+        "phpcs": "phpcs --standard=ruleset.xml --ignore=assets src",
+        "phpcsfix": "phpcbf --standard=ruleset.xml --ignore=assets src",
+        "tester": "tester tests/Tests/*.phpt  -c tests/php.ini --setup tests/setup.php",
+        "check-commit": "@php ./vendor/liquiddesign/codestyle/src/scripts/check-last-commit.php",
+        "changelog": "conventional-changelog --config=./vendor/liquiddesign/codestyle/src/changelog/changelog-config.php",
+        "release": "@changelog --commit",
+        "release:patch": "@changelog --patch --commit",
+        "release:minor": "@changelog --minor --commit",
+        "release:major": "@changelog --major --commit"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "version": "1.0.0"
 }
