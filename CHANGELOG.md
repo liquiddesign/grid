@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.1](https://github.com/liquiddesign/grid/compare/v1.0.0...v1.0.1) (2024-03-08)
+
+### Builds
+
+* Dependency PHP 8.1 ([24df5d](https://github.com/liquiddesign/grid/commit/24df5d2c445405fbabd8566a152b283bdcf6c835))
+
+
+---
+
 ## [1.0.0](https://github.com/liquiddesign/grid/compare/v0.1.10...v1.0.0) (2024-03-07)
 
 ### Builds
