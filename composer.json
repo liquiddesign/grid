@@ -2,7 +2,7 @@
     "name": "liquiddesign/grid",
     "description": "⊞ Komponenty datalistu, datagridu, stránkování, řazení a filtry",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
