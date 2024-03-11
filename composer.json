@@ -37,7 +37,11 @@
         "release": "@changelog --commit",
         "release:patch": "@changelog --patch --commit",
         "release:minor": "@changelog --minor --commit",
-        "release:major": "@changelog --major --commit"
+        "release:major": "@changelog --major --commit",
+        "check-code": [
+            "@phpcs",
+            "@phpstan"
+        ]
     },
     "config": {
         "allow-plugins": {
