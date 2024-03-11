@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.3](https://github.com/liquiddesign/grid/compare/v1.0.2...v1.0.3) (2024-03-11)
+
+### Bug Fixes
+
+* Add polyfill date functions to Datagrid ([f66369](https://github.com/liquiddesign/grid/commit/f663696e080b697e3ee71b85e8715f6a0dc90c07))
+
+
+---
+
 ## [1.0.2](https://github.com/liquiddesign/grid/compare/v1.0.1...v1.0.2) (2024-03-08)
 
 ### Builds
