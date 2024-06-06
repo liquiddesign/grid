@@ -285,34 +285,33 @@ class Datagrid extends Datalist
 	{
 		$values = [];
 		$flags = $this->getForm()::DATA_TEXT | $this->getForm()::DATA_KEYS;
-		$ids = \array_keys($this->getItemsOnPage());
-		
-		foreach ($ids as $id) {
-			$encodedId = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, $id) : $id;
-			$values[$id] = [];
-			$inputs = $inputNames === null ? $this->inputs : \array_intersect_key($this->inputs, \array_flip($inputNames));
-			
-			foreach ($inputs as $name => $settings) {
-				$httpData = $this->getForm()->getHttpData($flags, $name . '[]');
-				$mutation = null;
-				[$defaultValue, $isCheckbox] = $settings;
-				
-				if ($this->source instanceof Collection) {
-					$column = $this->source->getRepository()->getStructure()->getColumn($name);
+		$inputs = $inputNames === null ? $this->inputs : \array_intersect_key($this->inputs, \array_flip($inputNames));
 
-					if ($column && $column->hasMutations()) {
-						$mutation = $this->source->getConnection()->getMutation();
-					}
+		foreach ($inputs as $name => $settings) {
+			$httpData = $this->getForm()->getHttpData($flags, $name . '[]');
+			$mutation = null;
+			[$defaultValue, $isCheckbox] = $settings;
+
+			if ($this->source instanceof Collection) {
+				$column = $this->source->getRepository()->getStructure()->getColumn($name);
+
+				if ($column && $column->hasMutations()) {
+					$mutation = $this->source->getConnection()->getMutation();
 				}
-				
+			}
+
+			foreach ($httpData as $id => $value) {
+				$encodedId = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, $id) : $id;
+				$values[$encodedId] ??= [];
+
 				if ($isCheckbox) {
-					$values[$id][$name] = $mutation ? [$mutation => isset($httpData[$encodedId])] : isset($httpData[$encodedId]);
-				} elseif ($httpData[$encodedId] !== $defaultValue) {
-					$values[$id][$name] = $mutation ? [$mutation => $httpData[$encodedId]] : $httpData[$encodedId];
+					$values[$encodedId][$name] = $mutation ? [$mutation => isset($value)] : isset($value);
+				} elseif ($value !== $defaultValue) {
+					$values[$encodedId][$name] = $mutation ? [$mutation => $value] : $value;
 				}
 			}
 		}
-		
+
 		return $values;
 	}
 	
