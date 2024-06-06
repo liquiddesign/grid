@@ -15,6 +15,7 @@ use StORM\Collection;
 class Column
 {
 	use SmartObject;
+
 	
 	/**
 	 * @var array<callable>

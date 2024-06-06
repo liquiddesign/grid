@@ -2,7 +2,6 @@ parameters:
 	universalObjectCratesClasses:
 		- Nette\Http\SessionSection
 	level: 5
-	checkGenericClassInNonGenericObjectType: false
 	paths:
 		- src
 	excludePaths:
