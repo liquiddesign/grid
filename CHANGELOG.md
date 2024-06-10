@@ -4,6 +4,23 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.5](https://github.com/liquiddesign/grid/compare/v1.0.4...v1.0.5) (2024-06-10)
+
+### Bug Fixes
+
+
+##### Datagrid
+
+* Checkbox false value ([633baa](https://github.com/liquiddesign/grid/commit/633baa624c6314150e38b4bc755b0701004a707a))
+* DecodeIdCallback ([5110d7](https://github.com/liquiddesign/grid/commit/5110d7b5c98630b3a293d84267ef46fd3a9e7cdc))
+
+### Styles
+
+* Fix ([4cd312](https://github.com/liquiddesign/grid/commit/4cd312a6fbf7d9117e2900ef0a01cf3d55c3ef22))
+
+
+---
+
 ## [1.0.4](https://github.com/liquiddesign/grid/compare/v1.0.3...v1.0.4) (2024-06-06)
 
 ### ⚠ BREAKING CHANGES
