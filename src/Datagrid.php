@@ -301,7 +301,7 @@ class Datagrid extends Datalist
 			}
 
 			foreach ($httpData as $id => $value) {
-				$encodedId = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, $id) : $id;
+				$encodedId = $this->decodeIdCallback ? \call_user_func($this->decodeIdCallback, $id) : $id;
 				$values[$encodedId] ??= [];
 
 				if ($isCheckbox) {
