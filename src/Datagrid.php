@@ -305,7 +305,8 @@ class Datagrid extends Datalist
 				$values[$encodedId] ??= [];
 
 				if ($isCheckbox) {
-					$values[$encodedId][$name] = $mutation ? [$mutation => isset($value)] : isset($value);
+					$value = $value !== 'false';
+					$values[$encodedId][$name] = $mutation ? [$mutation => $value] : $value;
 				} elseif ($value !== $defaultValue) {
 					$values[$encodedId][$name] = $mutation ? [$mutation => $value] : $value;
 				}
@@ -327,7 +328,8 @@ class Datagrid extends Datalist
 		
 		return $this->addColumn($th, function ($object, $datagrid) use ($name, $setValueExpression) {
 			$id = $this->encodeIdCallback ? \call_user_func($this->encodeIdCallback, \call_user_func($this->idCallback, $object)) : \call_user_func($this->idCallback, $object);
-			
+
+			/** @var \Nette\Forms\Controls\BaseControl $input */
 			$input = $datagrid['form'][$name][$id];
 			
 			if (\is_string($setValueExpression)) {
@@ -339,8 +341,18 @@ class Datagrid extends Datalist
 			if (\is_callable($setValueExpression)) {
 				\call_user_func_array($setValueExpression, [$input, $object]);
 			}
+
+			$html = $input->getControl();
+
+			if ($input instanceof Checkbox) {
+				$newHtml = new Html();
+				$newHtml->addHtml('<input type="hidden" name="' . $name . '[' . $id . ']" value="false">');
+				$newHtml->addHtml($html);
+
+				$html = $newHtml;
+			}
 			
-			return $input->getControl();
+			return $html;
 		}, '%s', $orderExpression, $wrapperAttributes);
 	}
 	
