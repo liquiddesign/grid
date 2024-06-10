@@ -168,7 +168,7 @@ class Datagrid extends Datalist
 		$array = \array_values($this->getForm()->getHttpData($this->getForm()::DATA_TEXT | $this->getForm()::DATA_KEYS, '__selector[]'));
 		
 		if ($this->decodeIdCallback) {
-			$array = \array_map($this->decodeIdCallback, $array);
+			$array = \array_map($this->decodeIdCallback, \array_filter($array, fn($id) => $id !== 'false'));
 		}
 		
 		return $array;
