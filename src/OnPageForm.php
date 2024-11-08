@@ -20,6 +20,7 @@ class OnPageForm extends Form
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
 			$name = $datalist->getName();
+			/** @phpstan-ignore-next-line */
 			$form->getAction()->setParameter("$name-onpage", null);
 			$select->setHtmlAttribute('name', "$name-onpage");
 			$select->setDefaultValue($datalist->getOnPage());

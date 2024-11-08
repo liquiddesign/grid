@@ -29,6 +29,7 @@ class FilterForm extends Form
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
+				/** @phpstan-ignore-next-line */
 				$form->getAction()->setParameter("$datalist-$name", null);
 				
 				if ($component instanceof Button) {

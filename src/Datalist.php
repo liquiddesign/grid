@@ -530,6 +530,7 @@ class Datalist extends Control
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
+				/** @phpstan-ignore-next-line */
 				$form->getAction()->setParameter("$datalistName-$name", null);
 				
 				if ($component instanceof Button) {

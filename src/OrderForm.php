@@ -20,6 +20,7 @@ class OrderForm extends Form
 			/** @var \Grid\Datalist $datalist */
 			$datalist = $form->lookup(Datalist::class);
 			$name = $datalist->getName();
+			/** @phpstan-ignore-next-line */
 			$form->getAction()->setParameter("$name-order", null);
 			$select->setHtmlAttribute('name', "$name-order");
 			$select->setDefaultValue($datalist->getOrderParameter());
