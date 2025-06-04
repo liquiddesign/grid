@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.8](https://github.com/liquiddesign/grid/compare/v1.0.7...v1.0.8) (2025-06-04)
+
+### Bug Fixes
+
+
+##### Datagrid
+
+* Update addFilterMultiSelect2 method to return MultiSelectBox ([db5b98](https://github.com/liquiddesign/grid/commit/db5b980046a8c627d88deb3cd6c21aa19996e09c))
+
+
+---
+
 ## [1.0.7](https://github.com/liquiddesign/grid/compare/v1.0.6...v1.0.7) (2025-06-04)
 
 ### Features
