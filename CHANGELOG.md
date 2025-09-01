@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.9](https://github.com/liquiddesign/grid/compare/v1.0.8...v1.0.9) (2025-09-01)
+
+### Bug Fixes
+
+
+##### Datagrid
+
+* Ensure getSelectedIds filters out 'false' values correctly ([89409b](https://github.com/liquiddesign/grid/commit/89409bb3f531480e15c78a033fb98991b10e53bf))
+
+
+---
+
 ## [1.0.8](https://github.com/liquiddesign/grid/compare/v1.0.7...v1.0.8) (2025-06-04)
 
 ### Bug Fixes
