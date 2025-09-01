@@ -167,9 +167,10 @@ class Datagrid extends Datalist
 	public function getSelectedIds(): array
 	{
 		$array = \array_values($this->getForm()->getHttpData($this->getForm()::DATA_TEXT | $this->getForm()::DATA_KEYS, '__selector[]'));
-		
+		$array = \array_filter($array, fn($id) => $id !== 'false');
+
 		if ($this->decodeIdCallback) {
-			$array = \array_map($this->decodeIdCallback, \array_filter($array, fn($id) => $id !== 'false'));
+			$array = \array_map($this->decodeIdCallback, $array);
 		}
 		
 		return $array;
