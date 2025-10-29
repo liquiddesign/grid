@@ -195,15 +195,14 @@ class Datalist extends Control
 		if ($this->order === null) {
 			$orderDirection = $this->defaultDirection;
 		} else {
-			// phpcs:ignore
-			@[$name, $orderDirection] = \explode('-', $this->order);
-			unset($name);
+			$parts = \explode('-', $this->order);
+			$orderDirection = $parts[1] ?? $this->defaultDirection;
 		}
-		
+
 		if ($reverse) {
 			return Strings::upper($orderDirection) === 'ASC' ? 'DESC' : 'ASC';
 		}
-		
+
 		return Strings::upper($orderDirection) === 'ASC' ? 'ASC' : 'DESC';
 	}
 
