@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.10](https://github.com/liquiddesign/grid/compare/v1.0.9...v1.0.10) (2025-10-29)
+
+### Bug Fixes
+
+
+##### Datalist
+
+* Simplify order direction extraction ([2f5001](https://github.com/liquiddesign/grid/commit/2f5001df5b2ec12a43262ab37b70d62f8ab62d23))
+
+
+---
+
 ## [1.0.9](https://github.com/liquiddesign/grid/compare/v1.0.8...v1.0.9) (2025-09-01)
 
 ### Bug Fixes
