@@ -251,7 +251,7 @@ class Datalist extends Control
 
 	public function setOrder(?string $name, string $direction = 'ASC'): void
 	{
-		$this->order = $name . '-' . $direction;
+		$this->order = $name !== null ? $name . '-' . $direction : null;
 	}
 
 	public function addFilterExpression($name, callable $callback, $defaultValue = null): void
