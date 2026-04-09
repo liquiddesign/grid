@@ -430,7 +430,7 @@ class Datagrid extends Datalist
 		
 		foreach ($expressions as $key => $expression) {
 			$matches = [];
-			$params = "(?:\:(?:('[^']*'))?([\.0-9]+)?)?";
+			$params = "(?:\:(?:('[^']*'))?([\.a-zA-Z_0-9]+)?)?";
 			$filter = "(?:\|([a-zA-Z_\.0-9]+)$params$params)?";
 			\preg_match("/([a-zA-Z_.0-9]+)$filter$filter/", $expression, $matches);
 			$expressions[$key] = $matches[1];
