@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.13](https://github.com/liquiddesign/grid/compare/v1.0.12...v1.0.13) (2026-05-28)
+
+### Bug Fixes
+
+
+##### Datalist
+
+* Use ElementPrototype action object instead of stringified getAction to stay compatible with nette/forms 3.2.9 ([5aefc2](https://github.com/liquiddesign/grid/commit/5aefc2f))
+
+
+---
+
 ## [1.0.10](https://github.com/liquiddesign/grid/compare/v1.0.9...v1.0.10) (2025-10-29)
 
 ### Bug Fixes
