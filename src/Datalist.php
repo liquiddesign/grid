@@ -526,11 +526,15 @@ class Datalist extends Control
 			
 			$submit = false;
 			
+			$action = $form->getElementPrototype()->action;
+
 			/** @var \Nette\Forms\Controls\BaseControl $component */
 			foreach ($form->getComponents(true, BaseControl::class) as $component) {
 				$name = $component->getName();
-				/** @phpstan-ignore-next-line */
-				$form->getAction()->setParameter("$datalistName-$name", null);
+
+				if ($action instanceof \Nette\Application\UI\Link) {
+					$action->setParameter("$datalistName-$name", null);
+				}
 				
 				if ($component instanceof Button) {
 					if (!$submit) {
