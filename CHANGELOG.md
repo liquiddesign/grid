@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.14](https://github.com/liquiddesign/grid/compare/v1.0.13...v1.0.14) (2026-08-11)
+
+### Security
+
+##### Datagrid
+
+* `addColumnText()` now HTML-escapes string values by default (`htmlspecialchars` with `ENT_QUOTES`) before they are rendered into the cell via `setHtml()`, preventing stored XSS through data displayed in grid columns. Pass `$escape: false` to opt out for columns that intentionally emit HTML. `addColumn()` (raw callback) behaviour is unchanged; `HtmlStringable` and non-string values are left untouched.
+
 ## [1.0.13](https://github.com/liquiddesign/grid/compare/v1.0.12...v1.0.13) (2026-05-28)
 
 ### Bug Fixes

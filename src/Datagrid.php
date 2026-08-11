@@ -205,14 +205,14 @@ class Datagrid extends Datalist
 		return $this->columns[$id] = $column;
 	}
 	
-	public function addColumnText($th, $expressions, $td, ?string $orderExpression = null, array $wrapperAttributes = []): Column
+	public function addColumnText($th, $expressions, $td, ?string $orderExpression = null, array $wrapperAttributes = [], bool $escape = true): Column
 	{
 		$expressions = !\is_array($expressions) ? [$expressions] : $expressions;
 		$filters = $this->parseFilters($expressions);
-		
+
 		$grid = $this;
-		
-		return $this->addColumn($th, static function ($item) use ($expressions, $grid, $filters) {
+
+		return $this->addColumn($th, static function ($item) use ($expressions, $grid, $filters, $escape) {
 			$vars = [];
 			
 			foreach ($expressions as $key => $expression) {
@@ -240,9 +240,9 @@ class Datagrid extends Datalist
 					$previous = $grid->template->getLatte()->invokeFilter((string) $f, \array_merge([$previous], $args));
 				}
 				
-				$vars[] = $previous;
+				$vars[] = $escape && \is_string($previous) ? \htmlspecialchars($previous, \ENT_QUOTES) : $previous;
 			}
-			
+
 			return $vars;
 		}, $td, $orderExpression, $wrapperAttributes);
 	}
