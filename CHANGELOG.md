@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.16](https://github.com/liquiddesign/grid/compare/v1.0.15...v1.0.16) (2026-10-29)
+
+### Code Quality
+
+* PHPStan clean on nette/application 3.3 / nette/forms 3.3: typed `saveState()` params, accurate types for the form action and filter components, drop a no-op line in `addColumnAction()` (no behaviour change)
+
 ## [1.0.15](https://github.com/liquiddesign/grid/compare/v1.0.14...v1.0.15) (2026-10-29)
 
 ### Bug Fixes

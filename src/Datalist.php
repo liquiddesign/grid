@@ -363,6 +363,9 @@ class Datalist extends Control
 		}
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 */
 	public function saveState(array &$params): void
 	{
 		parent::saveState($params);
@@ -389,7 +392,7 @@ class Datalist extends Control
 
 		foreach ($this->filters as $filter => $value) {
 			if (isset($this->statefulFilters[$filter])) {
-				$params[$filter] = $value;
+				$params[(string) $filter] = $value;
 			}
 		}
 	}
@@ -526,6 +529,7 @@ class Datalist extends Control
 			
 			$submit = false;
 			
+			/** @var string|\Nette\Application\UI\Link|null $action UI\Form nese v action odkaz, ne řetězec */
 			$action = $form->getElementPrototype()->action;
 
 			/** @var \Nette\Forms\Controls\BaseControl $component */
@@ -557,7 +561,6 @@ class Datalist extends Control
 			$datalist = $form->lookup(Datalist::class);
 			
 			foreach ($datalist->getFilters() as $filter => $value) {
-				/** @var \Nette\Forms\Controls\BaseControl|null $component */
 				$component = $form->getComponent($filter, false);
 				
 				if (!isset($form[$filter]) || !$component || $this->filterDefaultValue[$filter] === $value) {

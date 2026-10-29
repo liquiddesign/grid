@@ -269,7 +269,6 @@ class Datagrid extends Datalist
 		return $this->addColumn($th, static function ($item) use ($properties, $parent, $id) {
 			$idName = $parent->getSourceIdName();
 			$vars = [$parent->link('process!', [$id, $item->$idName])];
-			$properties += !\is_array($properties) ? [$properties] : $properties;
 			
 			foreach ($properties as $property) {
 				$vars[] = $item->$property;
