@@ -652,6 +652,24 @@ class Datalist extends Control
 		return $items;
 	}
 
+	/**
+	 * nette/application >= 3.2.9 (AccessPolicy, nette/application#369) throws InvalidStateException from Component::createComponent()
+	 * for every createComponent<Name>() method when the component is not attached to a presenter yet. Grids are configured
+	 * in factories, before attaching (addFilter*(), addColumnInput(), addColumnSelector()), so our own sub-components
+	 * are created here directly. There is nothing to check before attaching, the same as in nette/application <= 3.2.8
+	 * (no #[Requires] attribute on these factory methods).
+	 */
+	protected function createComponent(string $name): ?IComponent
+	{
+		if (Arrays::contains(['filterForm', 'form', 'paging'], $name) && $this->lookup(Presenter::class, false) === null) {
+			$method = 'createComponent' . $name;
+
+			return \method_exists($this, $method) ? $this->$method($name) : null;
+		}
+
+		return parent::createComponent($name);
+	}
+
 	protected function createComponentFilterForm(): Component
 	{
 		$form = new \Nette\Application\UI\Form();
