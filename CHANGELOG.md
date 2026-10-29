@@ -4,6 +4,17 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.15](https://github.com/liquiddesign/grid/compare/v1.0.14...v1.0.15) (2026-10-29)
+
+### Bug Fixes
+
+##### Datalist
+
+* Create `filterForm`, `form` and `paging` sub-components directly while the grid is not attached to a presenter yet. nette/application >= 3.2.9 checks every `createComponent<Name>()` in `AccessPolicy::checkAccess()`, which throws `InvalidStateException: Presenter is required for checking requirements of ...` for grids configured in factories (`addFilter*()`, `addColumnInput()`, `addColumnSelector()`, `getForm()`, `getFilterForm()`), see nette/application#369
+
+
+---
+
 ## [1.0.14](https://github.com/liquiddesign/grid/compare/v1.0.13...v1.0.14) (2026-08-11)
 
 ### Security
