@@ -527,8 +527,11 @@ class Datalist extends Control
 			/** @var string|\Nette\Application\UI\Link|null $action UI\Form nese v action odkaz, ne řetězec */
 			$action = $form->getElementPrototype()->action;
 
-			/** @var \Nette\Forms\Controls\BaseControl $component */
-			foreach ($form->getComponents(true, BaseControl::class) as $component) {
+			foreach ($form->getComponentTree() as $component) {
+				if (!$component instanceof BaseControl) {
+					continue;
+				}
+
 				$name = $component->getName();
 
 				if ($action instanceof \Nette\Application\UI\Link) {

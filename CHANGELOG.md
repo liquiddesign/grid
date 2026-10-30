@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.18](https://github.com/liquiddesign/grid/compare/v1.0.17...v1.0.18) (2026-10-30)
+
+### Compatibility
+
+* Allow `nette/component-model` `^3.1 || ^4.0`. `Datalist` and `FilterForm` walk filter controls through `getComponentTree()` and `datagrid.latte` filters submit buttons with `instanceof` — `getComponents()` with the recursive flag or a type filter throws `DeprecatedException` in component-model 4 (no behaviour change on 3.x)
+
 ## [1.0.17](https://github.com/liquiddesign/grid/compare/v1.0.16...v1.0.17) (2026-10-30)
 
 ### Code Quality

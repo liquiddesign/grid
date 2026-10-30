@@ -10,8 +10,8 @@
 		{$control->getRows()}
 	</table>
 	<div>
-		{foreach $form->getComponents(false, Nette\Forms\Controls\SubmitButton::class) as $component}
-			{$component->getControl()}
+		{foreach $form->getComponents() as $component}
+			{if $component instanceof Nette\Forms\Controls\SubmitButton}{$component->getControl()}{/if}
 		{/foreach}
 	</div>
 {/form}
