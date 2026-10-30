@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grid;
 
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Presenter;
 use Nette\ComponentModel\Component;
@@ -41,19 +42,13 @@ class Datalist extends Control
 	 */
 	public array $onSaveState = [];
 	
-	/**
-	 * @persistent
-	 */
+	#[Persistent]
 	public ?string $order = null;
 	
-	/**
-	 * @persistent
-	 */
+	#[Persistent]
 	public ?int $page = null;
 
-	/**
-	 * @persistent
-	 */
+	#[Persistent]
 	public ?int $onpage = null;
 
 	protected ?int $defaultOnPage = null;

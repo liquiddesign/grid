@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.17](https://github.com/liquiddesign/grid/compare/v1.0.16...v1.0.17) (2026-10-30)
+
+### Code Quality
+
+##### Datalist
+
+* Persistent `order`, `page` and `onpage` declared with `#[Persistent]` instead of the `@persistent` annotation, which nette/application 3.3 deprecates (`E_USER_DEPRECATED` on every request, BlueScreen in Tracy debug mode). Requires nette/application ^3.0.7, the first release that reads the attribute (no behaviour change)
+
 ## [1.0.16](https://github.com/liquiddesign/grid/compare/v1.0.15...v1.0.16) (2026-10-29)
 
 ### Code Quality
