@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.19](https://github.com/liquiddesign/grid/compare/v1.0.18...v1.0.19) (2026-11-16)
+
+### Compatibility
+
+* `datagrid.latte` passes the paging argument with a comma (`{control paging, $control}`) — nette/application 3.3.1 deprecates `{control}` arguments without a comma (`E_USER_DEPRECATED` „Missing comma before tag arguments" while compiling the template, BlueScreen in Tracy debug mode). Same output on older nette/application, which already accepted the comma (no behaviour change)
+
 ## [1.0.18](https://github.com/liquiddesign/grid/compare/v1.0.17...v1.0.18) (2026-10-30)
 
 ### Compatibility
